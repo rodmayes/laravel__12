@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Playtomic;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Playtomic\ClubUpdateRequest;
 use App\Http\Requests\Playtomic\TimetableIndexRequest;
 use App\Http\Requests\Playtomic\TimetableStoreRequest;
+use App\Http\Requests\Playtomic\TimetableUpdateRequest;
 use App\Models\Club;
 use App\Models\Timetable;
 use Illuminate\Http\Request;
@@ -20,29 +22,29 @@ class TimetableController extends Controller
         return Inertia::render('Playtomic/TimeTable/Index', [
             'title'         => 'Timestables',
             'filters'       => $request->all(['search', 'field', 'order']),
-            'items'         => $this->getDataResults($request)
+            'items'         => $this->getData($request)
         ]);
     }
 
-    public function resultsRefresh(Request $request)
+    public function refresData(Request $request)
     {
         return response()->json([
-            'items' => $this->getDataResults($request),
+            'items' => $this->getData($request),
         ]);
     }
 
-    public function getDataResults(Request $request): LengthAwarePaginator
+    public function getData(Request $request): LengthAwarePaginator
     {
         return $this->getDataQuery($request)->paginate($request->perPage ?? 20);
     }
 
     private function getDataQuery(Request $request)
     {
-        $clubs = Timetable::query();
+        $items = Timetable::query();
         if ($request->has('search')) {
-            $clubs->where('name', 'LIKE', "%" . $request->search . "%");
-            $clubs->orWhere('playtomic_id', 'LIKE', "%" . $request->search . "%");
-            $clubs->orWhere('playtomic_id_summer', 'LIKE', "%" . $request->search . "%");
+            $items->where('name', 'LIKE', "%" . $request->search . "%");
+            $items->orWhere('playtomic_id', 'LIKE', "%" . $request->search . "%");
+            $items->orWhere('playtomic_id_summer', 'LIKE', "%" . $request->search . "%");
         }
         // Ordenación múltiple
         if ($request->filled('sort')) {
@@ -51,29 +53,13 @@ class TimetableController extends Controller
                 foreach ($sortArray as $sort) {
                     if (isset($sort['field'], $sort['order']) &&
                         in_array($sort['field'], ['id', 'name', 'playtomic_id','playtomic_id_summer'])) {
-                        $clubs->orderBy($sort['field'], $sort['order']);
+                        $items->orderBy($sort['field'], $sort['order']);
                     }
                 }
             }
         }
 
-        return $clubs;
-    }
-
-    public function create()
-    {
-        return view('playtomic.timetable.create');
-    }
-
-    public function edit(Timetable $timetable)
-    {
-        return view('playtomic.timetable.edit', compact('timetable'));
-    }
-
-    public function show(Timetable $timetable)
-    {
-        $timetable->load('resources');
-        return view('playtomic.timetable.show', compact('timetable'));
+        return $items;
     }
 
     public function store(TimetableStoreRequest $request)
@@ -83,13 +69,41 @@ class TimetableController extends Controller
             $timestable = Timetable::create([
                 'name' => $request->name,
                 'playtomic_id' => $request->playtomic_id,
-                'playtomic_id_summer' => $request->playtomic_id_summer,
+                'playtomic_id_summer' => $request->playtomic_id_summer
             ]);
             DB::commit();
             return back()->with('success', $timestable->name. ' created successfully.');
         } catch (\Throwable $th) {
             DB::rollback();
             return back()->with('error', 'Error creating ' . $request->name . $th->getMessage());
+        }
+    }
+
+    public function update(TimetableUpdateRequest $request, Timetable $timetable)
+    {
+        DB::beginTransaction();
+        try {
+            $timetable->update([
+                'name' => $request->name,
+                'playtomic_id' => $request->playtomic_id,
+                'playtomic_id_summer' => $request->playtomic_id_summer
+            ]);
+            DB::commit();
+            return back()->with('success', $timetable->name. ' updated successfully.');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return back()->with('error', 'Error updating ' . $club->name . $th->getMessage());
+        }
+    }
+
+    public function destroy(Club $club)
+    {
+        try {
+            $club->delete();
+            return back()->with('success', $club->name . ' deleted successfully.');
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Error deleting ' . $club->name . $th->getMessage());
+
         }
     }
 

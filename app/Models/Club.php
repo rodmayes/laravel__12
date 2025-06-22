@@ -45,6 +45,8 @@ class Club extends Model
         'timetable_summer','booking_hour'
     ];
 
+    public $appends = ['number_resources'];
+
     public function resources()
     {
         return $this->hasMany(Resource::class);
@@ -57,5 +59,9 @@ class Club extends Model
 
     public function getTimetableSummerActiveAttribute(){
         return $this->timetable_summer == 1;
+    }
+
+    public function getNumberResourcesAttribute(){
+        return $this->resources()->count();
     }
 }

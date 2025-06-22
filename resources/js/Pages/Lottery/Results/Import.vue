@@ -1,8 +1,6 @@
 <script setup>
 import { usePage } from '@inertiajs/vue3';
 import {reactive} from "vue";
-import { loadToast } from '@/composables/loadToast';
-const { toast } = loadToast();
 
 const page = usePage();
 const csrfToken = page.props.csrf_token;
@@ -19,11 +17,11 @@ const data = reactive({
 });
 
 const onImportError = (event) => {
-    toast.add({severity:'error', summary: 'Error', detail: event.xhr.statusText, life: 3000});
+    $toast.add({severity:'error', summary: 'Error', detail: event.xhr.statusText, life: 3000});
 }
 
 const onImportSuccess  = (event) => {
-    toast.add({severity:'success', summary: 'Upload', detail: 'File uploaded', life: 3000});
+    $toast.add({severity:'success', summary: 'Upload', detail: 'File uploaded', life: 3000});
     emit('close');
 }
 

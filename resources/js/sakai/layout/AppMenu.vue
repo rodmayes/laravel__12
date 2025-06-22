@@ -11,12 +11,12 @@ const model = ref([
         items: [
             {
                 label: 'Playtomic',
-                icon: 'pi pi-fw pi-bullseye',
+                icon: 'pi pi-fw pi-paypal',
                 items: [
                     { label: 'Timetables', icon: 'pi pi-fw pi-clock', to: '/playtomic/timetables', can:'playtomic.timetable_index' },
-                    { label: 'Clubs', icon: 'pi pi-fw pi-building-columns', to: '/playtomic/club', can:'playtomic.club_index' },
-                    { label: 'Resource', icon: 'pi pi-fw pi-box', to: '/playtomic/resources', class: 'rotated-icon', can:'playtomic.resource_index' },
-                    { label: 'Bookings', icon: 'pi pi-fw pi-calendar-clock', to: '/playtomic/bookings', class: 'rotated-icon', can:'playtomic.booking_index' },
+                    { label: 'Clubs', icon: 'pi pi-fw pi-bookmark', to: '/playtomic/club', can:'playtomic.club_index' },
+                    { label: 'Resources', icon: 'pi pi-fw pi-box', to: '/playtomic/resources', class: 'rotated-icon', can:'playtomic.resource_index' },
+                    { label: 'Bookings', icon: 'pi pi-fw pi-calendar-plus', to: '/playtomic/bookings', class: 'rotated-icon', can:'playtomic.booking_index' },
                 ]
             },
 

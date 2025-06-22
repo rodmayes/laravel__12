@@ -3,12 +3,9 @@
 namespace App\Observer;
 
 use App\Models\Booking;
-use App\Models\ScheduledJob;
 use App\Services\BookingJobScheduler;
 use App\Services\Playtomic\PlaytomicBookingService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use function App\Observers\activity;
 
 class BookingObserver
 {

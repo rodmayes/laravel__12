@@ -7,7 +7,6 @@ import { useForm } from '@inertiajs/vue3';
 import { ref, reactive, onMounted } from "vue";
 import pkg from "lodash";
 import axios from "axios";
-import { loadToast } from '@/composables/loadToast';
 
 const { pickBy } = pkg;
 
@@ -16,8 +15,6 @@ const props = defineProps({
     results: Object,
     perPage: Number,
 });
-
-loadToast();
 
 const deleteDialog = ref(false);
 const form = useForm({});

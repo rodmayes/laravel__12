@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Playtomic;
 
-use App\Models\Club;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ClubUpdateRequest extends FormRequest
 {
@@ -24,7 +24,12 @@ class ClubUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'playtomic_id' => 'required|string|max:150|unique:' . Club::class.',playtomic_id',
+            'playtomic_id' => [
+                'required',
+                'string',
+                'max:150',
+                Rule::unique('playtomic_club', 'playtomic_id')->ignore($this->route('resource')),
+            ],
             'days_min_booking' => 'required|integer|min:1',
             'timetable_summer' =>  'required|boolean',
             'booking_hour' =>  'required|date_format:H:i:s',

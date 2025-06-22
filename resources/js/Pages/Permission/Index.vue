@@ -9,7 +9,6 @@ import { onMounted, reactive, ref, watch, computed } from "vue";
 import pkg from "lodash";
 import { router } from "@inertiajs/vue3";
 const { _, debounce, pickBy } = pkg;
-import { loadToast } from '@/composables/loadToast';
 
 const props = defineProps({
     title: String,
@@ -18,8 +17,6 @@ const props = defineProps({
     roles: Object,
     perPage: Number,
 });
-
-loadToast();
 
 const deleteDialog = ref(false);
 const form = useForm({});

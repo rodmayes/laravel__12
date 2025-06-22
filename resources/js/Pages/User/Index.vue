@@ -3,13 +3,13 @@
 import AppLayout from "@/sakai/layout/AppLayout.vue";
 import Create from "@/Pages/User/Create.vue";
 import Edit from "@/Pages/User/Edit.vue";
+import UserPlaytomic from "@/Pages/User/UserPlaytomic.vue";
 import { usePage, useForm } from '@inertiajs/vue3';
 
 import { onMounted, reactive, ref, watch, computed } from "vue";
 import pkg from "lodash";
 import { router } from "@inertiajs/vue3";
 const { _, debounce, pickBy } = pkg;
-import { loadToast } from '@/composables/loadToast';
 
 const props = defineProps({
     title: String,
@@ -19,8 +19,6 @@ const props = defineProps({
     perPage: Number,
 });
 
-loadToast();
-
 const deleteDialog = ref(false);
 const form = useForm({});
 
@@ -29,11 +27,12 @@ const data = reactive({
         search: props.filters.search,
         field: props.filters.field,
         order: props.filters.order,
-        // perPage: props.perPage,
+        perPage: props.perPage,
         createOpen: false,
         editOpen: false,
+        userPlaytomicOpen: false
     },
-    user: null,
+    user: null
 });
 
 const deleteData = () => {
@@ -48,11 +47,6 @@ const deleteData = () => {
         onFinish: () => null,
     });
 }
-
-const roles = props.roles?.map((role) => ({
-    name: role.name,
-    code: role.name,
-}));
 
 const onPageChange = (event) => {
     router.get(route('user.index'), { page: event.page + 1, perPage: event.rows }, { preserveState: true });
@@ -70,27 +64,38 @@ watch(
     }, 150)
 );
 
+const breadcrum = ref([
+    { label: props.title, url: 'user' }
+]);
+
+
 </script>
 
 <template>
-    <app-layout>
+    <app-layout :items="breadcrum">
         <div class="card">
             <Create
                 :show="data.createOpen"
                 @close="data.createOpen = false"
-                :roles="roles"
+                :roles="props.roles"
                 :title="props.title"
             />
             <Edit
                 :show="data.editOpen"
                 @close="data.editOpen = false"
-                :roles="roles"
+                :roles="props.roles"
+                :user="data.user"
+                :title="props.title"
+            />
+            <UserPlaytomic
+                :show="data.userPlaytomicOpen"
+                @close="data.userPlaytomicOpen = false"
                 :user="data.user"
                 :title="props.title"
             />
             <Button v-show="can(['user.create'])" label="Create" @click="data.createOpen = true" icon="pi pi-plus" />
-            <DataTable lazy :value="users.data" paginator  :rows="users.per_page" :totalRecords="users.total" :first="(users.current_page - 1) * users.per_page"
-                       @page="onPageChange"  tableStyle="min-width: 50rem" :rowsPerPageOptions="[5, 10, 20, 50]">
+            <DataTable :value="users.data" paginator :rows="users.per_page" :totalRecords="users.total" :first="(users.current_page - 1) * users.per_page"
+                       @page="onPageChange" tableStyle="min-width: 50rem" :rowsPerPageOptions="[5, 10, 20, 50]" :sortField="'name'" :sortOrder="-1">
                 <template #header>
                     <div class="flex justify-end">
                         <IconField>
@@ -110,20 +115,21 @@ watch(
                     </template>
                 </Column>
 
-                <Column field="name" header="Name"></Column>
-                <Column field="email" header="Email"></Column>
-                <Column header="Role">
+                <Column field="name" header="Name" sortable></Column>
+                <Column field="email" header="Email" sortable></Column>
+                <Column header="Roles" sortable>
                     <template #body="slotProps">
-                       {{ slotProps.data.roles[0].name }}
+                        {{ slotProps.data.roles.map(role => role.name).join(', ') }}
                     </template>
                 </Column>
-                <Column field="created_at" header="Created"></Column>
-                <Column field="updated_at" header="Updated"></Column>
+                <Column field="created_at" header="Created" sortable></Column>
+                <Column field="updated_at" header="Updated" sortable></Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
-                        <Button v-show="can(['user.update'])" icon="pi pi-pencil" outlined rounded class="mr-2"  @click="
-                                                    (data.editOpen = true),
-                                                        (data.user = slotProps.data)" />
+                        <Button v-show="can(['user.update'])" icon="pi pi-pencil" outlined rounded class="mr-2"
+                         @click="(data.editOpen = true), (data.user = slotProps.data)" />
+                        <Button v-show="can(['user.update'])" icon="pi pi-paypal" outlined rounded class="mr-2" severity="info"
+                         @click="(data.userPlaytomicOpen = true), (data.user = slotProps.data)" />
                         <Button v-show="can(['user.delete'])" icon="pi pi-trash" outlined rounded severity="danger" @click="deleteDialog = true; data.user = slotProps.data" />
                     </template>
                 </Column>

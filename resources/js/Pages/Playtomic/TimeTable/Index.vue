@@ -38,7 +38,7 @@ const data = reactive({
 
 const fetchData = () => {
   const params = pickBy(data.params);
-  axios.post(route('playtomic.timetable.refreshData'), params)
+  axios.post(route('playtomic.timetables.refreshData'), params)
       .then(response => {
         Object.assign(itemsRef, response.data.items);
   });
@@ -94,8 +94,8 @@ const breadcrum = ref([
           <Button v-show="can(['playtomic.timetable_create'])" label="Create" @click="data.createOpen = true" icon="pi pi-plus" severity="success" size="small"/>
         </template>
       </Menubar>
-      <Create :show="data.createOpen" @close="data.createOpen = false" :title="props.title"/>
-      <Edit :show="data.editOpen" @close="data.editOpen = false" :timetable="data.timetable" :title="props.title"/>
+      <Create :show="data.createOpen" @close="data.createOpen = false" :title="props.title" @updated="onRefresh"/>
+      <Edit :show="data.editOpen" @close="data.editOpen = false" :timetable="data.timetable" :title="props.title" @updated="onRefresh"/>
 
       <DataTable
         :value="itemsRef.data"
@@ -138,7 +138,7 @@ const breadcrum = ref([
             <template #body="slotProps">
                 <Button v-show="can(['playtomic.timetable_edit'])" icon="pi pi-pencil" outlined rounded class="mr-2"
                         @click="(data.editOpen = true),(data.timetable = slotProps.data)"/>
-                <Button v-show="can(['playtomic.timetable_delete'])" icon="pi pi-trash" outlined rounded severity="danger" @click="deleteDialog = true; data.timestable = slotProps.data" />
+                <Button v-show="can(['playtomic.timetable_delete'])" icon="pi pi-trash" outlined rounded severity="danger" @click="deleteDialog = true; data.timetable = slotProps.data" />
             </template>
         </Column>
       </DataTable>

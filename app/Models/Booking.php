@@ -171,7 +171,7 @@ class Booking extends Model
     }
 
     public function scopeByPlayer($query, $value){
-        return $query->where('player_email', mb_strtolower(trim($value)));
+        return $query->whereRaw("LOWER(player_email) like '%". mb_strtolower(trim($value))."%'");
     }
 
     public function scopeIsPublic($query){

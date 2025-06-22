@@ -7,6 +7,7 @@ use App\Http\Requests\Playtomic\ClubStoreRequest;
 use App\Http\Requests\Playtomic\ClubUpdateRequest;
 use App\Http\Requests\Playtomic\ClubIndexRequest;
 use App\Models\Club;
+use App\Models\Resource;
 use App\Services\Playtomic\PlaytomicHttpService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,31 +22,31 @@ class ClubController extends Controller
         return Inertia::render('Playtomic/Club/Index', [
             'title'         => 'Clubs',
             'filters'       => $request->all(['search', 'field', 'order']),
-            'items'         => $this->getDataResults($request)
+            'items'         => $this->getData($request)
         ]);
     }
 
-    public function resultsRefresh(Request $request)
+    public function refresData(Request $request)
     {
         return response()->json([
-            'items' => $this->getDataResults($request),
+            'items' => $this->getData($request),
         ]);
     }
 
-    public function getDataResults(Request $request): LengthAwarePaginator
+    public function getData(Request $request): LengthAwarePaginator
     {
         return $this->getDataQuery($request)->paginate($request->perPage ?? 20);
     }
 
     private function getDataQuery(Request $request)
     {
-        $clubs = Club::query();
+        $items = Club::query();
         if ($request->has('search')) {
-            $clubs->where('name', 'LIKE', "%" . $request->search . "%");
-            $clubs->orWhere('playtomic_id', 'LIKE', "%" . $request->search . "%");
-            $clubs->orWhere('timetable_summer', 'LIKE', "%" . $request->search . "%");
-            $clubs->orWhere('booking_hour', 'LIKE', "%" . $request->search . "%");
-            $clubs->orWhere('days_min_booking', 'LIKE', "%" . $request->search . "%");
+            $items->where('name', 'LIKE', "%" . $request->search . "%");
+            $items->orWhere('playtomic_id', 'LIKE', "%" . $request->search . "%");
+            $items->orWhere('timetable_summer', 'LIKE', "%" . $request->search . "%");
+            $items->orWhere('booking_hour', 'LIKE', "%" . $request->search . "%");
+            $items->orWhere('days_min_booking', 'LIKE', "%" . $request->search . "%");
         }
         // Ordenación múltiple
         if ($request->filled('sort')) {
@@ -54,29 +55,13 @@ class ClubController extends Controller
                 foreach ($sortArray as $sort) {
                     if (isset($sort['field'], $sort['order']) &&
                         in_array($sort['field'], ['id', 'name', 'playtomic_id','timetable_summer','booking_hour','days_min_booking'])) {
-                        $clubs->orderBy($sort['field'], $sort['order']);
+                        $items->orderBy($sort['field'], $sort['order']);
                     }
                 }
             }
         }
 
-        return $clubs;
-    }
-
-    public function create()
-    {
-        return view('playtomic.club.create');
-    }
-
-    public function edit(Club $club)
-    {
-        return view('playtomic.club.edit', compact('club'));
-    }
-
-    public function show(Club $club)
-    {
-        $club->load('resources');
-        return view('playtomic.club.show', compact('club'));
+        return $items;
     }
 
     public function store(ClubStoreRequest $request)
@@ -98,11 +83,10 @@ class ClubController extends Controller
         }
     }
 
-    public function update(ClubUpdateRequest $request, $id)
+    public function update(ClubUpdateRequest $request, Club $club)
     {
         DB::beginTransaction();
         try {
-            $club = Club::findOrFail($id);
             $club->update([
                 'name' => $request->name,
                 'playtomic_id' => $request->playtomic_id,
@@ -144,5 +128,30 @@ class ClubController extends Controller
     {
         $clubs = Club::all();
         return response()->json($clubs);
+    }
+
+    public function syncResources(Club $club){
+        try {
+            $service = (new PlaytomicHttpService(auth()->user()->id));
+            $service->login();
+            $information_club = $service->getInformationClub($club);
+
+            if (isset($information_club['resources']))
+                foreach ($information_club['resources'] as $resource) {
+                    Resource::updateOrCreate(
+                        [
+                            'playtomic_id' => $resource['resource_id'],
+                            'club_id' => $club->id
+                        ],
+                        [
+                            'name' => $resource['name'],
+                            'playtomic_id' => $resource['resource_id'],
+                            'club_id' => $club->id
+                        ]);
+                }
+            return back()->with('success', $club->name. ' resources synced successfully.');
+        }catch (\Exception $e){
+            return back()->with('error', $club->name. ' resources synced failed. '.$e->getMessage());
+        }
     }
 }

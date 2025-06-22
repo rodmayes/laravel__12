@@ -14,18 +14,13 @@ class ApiHttpServiceRequest extends Http
 
     public function __construct($baseUri = '', $token = null)
     {
-        if (!$token) {
-            Log::error('[API] Token no proporcionado');
-            throw new \Exception('Token ausente en el constructor de ApiHttpServiceRequest');
-        }
-
         $this->baseUri = rtrim($baseUri);
 
         $this->httpd = Http::withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
                 'User-Agent' => 'application/postscript',
-                "Authorization" => "Bearer {$token}",
+                'Authorization' => $token ? "Bearer {$token}" : null
             ])
             ->withOptions([
                 'base_uri' => $this->baseUri,

@@ -29,10 +29,54 @@ use App\Http\Controllers\Playtomic\TimetableController;
 // CLUBS
 Route::prefix('club')->name('club.')->group(function () {
     Route::get('', [ClubController::class, 'index'])->name('index');
-    Route::get('getData', [ClubController::class, 'getDataResults'])->name('getData');
-    Route::post('refreshData', [ClubController::class, 'resultsRefresh'])->name('refreshData');
-    Route::put('{result}', [ClubController::class, 'update'])->name('update');
+    Route::post('getData', [ClubController::class, 'getData'])->name('getData');
+    Route::post('refreshData', [ClubController::class, 'refresData'])->name('refreshData');
+    Route::put('{club}', [ClubController::class, 'update'])->name('update');
     Route::post('', [ClubController::class, 'store'])->name('store');
     Route::get('availability/{club}',[ClubController::class, 'availability'])->name('availability');
     Route::get('get-list',[ClubController::class, 'getList'])->name('get-list');
+    Route::get('sync-resources/{club}',[ClubController::class, 'syncResources'])->name('sync-resources');
+    Route::delete('{club}',[ClubController::class, 'destroy'])->name('destroy');
+});
+
+// TIMETABLES
+Route::prefix('timetables')->name('timetables.')->group(function () {
+    Route::get('', [TimetableController::class, 'index'])->name('index');
+    Route::post('getData', [TimetableController::class, 'getData'])->name('getData');
+    Route::post('refreshData', [TimetableController::class, 'refresData'])->name('refreshData');
+    Route::put('{timetable}', [TimetableController::class, 'update'])->name('update');
+    Route::post('', [TimetableController::class, 'store'])->name('store');
+    Route::get('get-list',[TimetableController::class, 'getList'])->name('get-list');
+    Route::delete('{timetable}',[TimetableController::class, 'destroy'])->name('timetable');
+});
+
+// RESOURCES
+Route::prefix('resources')->name('resources.')->group(function () {
+    Route::get('', [ResourceController::class, 'index'])->name('index');
+    Route::post('filter', [ResourceController::class, 'filter'])->name('filter');
+    Route::post('refreshData', [ResourceController::class, 'refresData'])->name('refreshData');
+    Route::put('{resource}', [ResourceController::class, 'update'])->name('update');
+    Route::post('', [ResourceController::class, 'store'])->name('store');
+    Route::get('get-list',[ResourceController::class, 'getList'])->name('get-list');
+    Route::delete('{resource}',[ResourceController::class, 'destroy'])->name('destroy');
+});
+
+// BOOKINGS
+Route::prefix('bookings')->name('bookings.')->group(function () {
+    Route::get('', [BookingController::class, 'index'])->name('index');
+    Route::post('getData', [BookingController::class, 'getData'])->name('getData');
+    Route::get('create', [BookingController::class, 'create'])->name('create');
+    Route::get('edit', [BookingController::class, 'edit'])->name('edit');
+    Route::post('refreshData', [BookingController::class, 'refresData'])->name('refreshData');
+    Route::put('{resource}', [BookingController::class, 'update'])->name('update');
+    Route::post('', [BookingController::class, 'store'])->name('store');
+    Route::get('get-list',[BookingController::class, 'getList'])->name('get-list');
+    Route::delete('{resource}',[BookingController::class, 'destroy'])->name('destroy');
+});
+
+// USERS
+Route::prefix('user')->name('user.')->group(function () {
+    Route::put('update/{user}', [PlaytomicController::class, 'updateUser'])->name('update');
+    Route::put('save-password/{user}', [PlaytomicController::class, 'storePassword'])->name('save-password');
+    Route::get('refresh-token/{user}', [PlaytomicController::class, 'refreshToken'])->name('refresh-token');
 });

@@ -37,9 +37,9 @@ class UserController extends Controller
         if ($request->has(['field', 'order'])) {
             $users->orderBy($request->field, $request->order);
         }
-        $role = auth()->user()->roles->pluck('name')[0];
+        $userRoles = auth()->user()->roles->pluck('name')->toArray();
         $roles = Role::get();
-        if ($role != 'superadmin') {
+        if (!in_array('superadmin', $userRoles)) {
             $users->whereHas('roles', function ($query) {
                 return $query->where('name', '<>', 'superadmin');
             });
@@ -63,7 +63,11 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-            $user->assignRole($request->role);
+
+            if ($request->has('roles')) {
+                $user->roles()->sync($request->roles);
+            }
+
             DB::commit();
             return back()->with('success', $user->name. ' created successfully.');
         } catch (\Throwable $th) {
@@ -82,7 +86,11 @@ class UserController extends Controller
                 'email'     => $request->email,
                 'password'  => $request->password ? Hash::make($request->password) : $user->password,
             ]);
-            $user->syncRoles($request->role);
+
+            if ($request->has('roles')) {
+                $user->roles()->sync($request->roles);
+            }
+
             DB::commit();
             return back()->with('success', $user->name. ' updated successfully.');
         } catch (\Throwable $th) {

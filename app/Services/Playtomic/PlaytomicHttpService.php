@@ -24,13 +24,8 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
     {
         $this->debug = $debug;
         $this->user = User::findOrFail($user_id);
-        $this->playtomic_token = $this->user->playtomic_token;
+        $this->playtomic_token = $this->user->playtomic_token ?? '';
         $this->urlPlaytomicBase = config('playtomic.url_base');
-
-        if (!$this->playtomic_token) {
-            Log::error('[Playtomic] Token vacío para el usuario: ' . $this->user->email);
-            throw new \Exception('Token de autenticación no disponible');
-        }
 
         parent::__construct($this->urlPlaytomicBase, $this->playtomic_token);
     }

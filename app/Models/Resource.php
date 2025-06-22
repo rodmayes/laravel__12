@@ -39,7 +39,8 @@ class Resource extends Model
         'name',
         'club_id',
         'playtomic_id',
-        'priority'
+        'priority',
+        'visible'
     ];
 
     public function club()
@@ -75,5 +76,13 @@ class Resource extends Model
 
     public function scopeOrderByName($query, $order = 'ASC'){
         return $query->orderBy('name', $order);
+    }
+
+    public function scopeVisible($query){
+        return $query->where('visible', 1);
+    }
+
+    public function getIsVisibleAttribute(){
+        return $this->visible == 1;
     }
 }

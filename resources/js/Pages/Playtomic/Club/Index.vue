@@ -4,12 +4,16 @@ import AppLayout from "@/sakai/layout/AppLayout.vue";
 import Create from "@/Pages/Playtomic/Club/Create.vue";
 import Edit from "@/Pages/Playtomic/Club/Edit.vue";
 import { useForm } from '@inertiajs/vue3';
+import { useConfirm } from "primevue/useconfirm";
+import { onMounted, reactive, ref, getCurrentInstance, watch, computed } from "vue";
+import axios from "axios";
 
-import { onMounted, reactive, ref, watch, computed } from "vue";
+// Toast manual
+const inst = getCurrentInstance();
+const $toast = inst.appContext.config.globalProperties.$toast;
+
 import pkg from "lodash";
 const { pickBy } = pkg;
-import { loadToast } from '@/composables/loadToast';
-import axios from "axios";
 
 const props = defineProps({
   title: String,
@@ -18,7 +22,7 @@ const props = defineProps({
   perPage: Number
 });
 
-loadToast();
+const confirm = useConfirm();
 
 const deleteDialog = ref(false);
 const form = useForm({});
@@ -42,6 +46,39 @@ const fetchData = () => {
         Object.assign(itemsRef, response.data.items);
     });
 };
+
+const syncResourcesConfirm = (item) => {
+    confirm.require({
+        message: 'Are you sure you want to sync resources \'s Club '+item?.name+'?',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Sync'
+        },
+        accept: () => {
+            syncResources(item);
+        },
+        reject: () => {}
+    });
+};
+
+const syncResources = (club) => {
+    deleteDialog.value = false;
+
+    form.get(route("playtomic.club.sync-resources", club?.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            fetchData();
+        },
+        onError: () => {},
+        onFinish: () => null,
+    });
+}
 
 const deleteData = () => {
     deleteDialog.value = false;
@@ -95,6 +132,7 @@ const breadcrum = ref([
             </Menubar>
             <Create :show="data.createOpen" @close="data.createOpen = false" :title="props.title"/>
             <Edit :show="data.editOpen" @close="data.editOpen = false" :club="data.club" :title="props.title"/>
+            <ConfirmDialog></ConfirmDialog>
 
             <DataTable
                 :value="itemsRef.data"
@@ -113,7 +151,8 @@ const breadcrum = ref([
                 size="small"
             >
                 <template #header>
-                    <div class="flex justify-end">
+                    <div class="flex flex-wrap gap-2 items-center justify-between">
+                        <span class="text-xl font-bold">{{ props.title }}</span>
                         <IconField>
                             <InputIcon>
                                 <i class="pi pi-search" />
@@ -139,11 +178,13 @@ const breadcrum = ref([
                     </template>
                 </Column>
                 <Column field="booking_hour" header="Booking hour" sortable></Column>
+                <Column field="number_resources" header="# Resources" sortable></Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
-                        <Button v-show="can(['playtomic.club_edit'])" icon="pi pi-pencil" outlined rounded class="mr-2"  @click="
-                                                    (data.editOpen = true),
-                                                        (data.club = slotProps.data)" />
+                        <Button v-show="can(['playtomic.club_edit'])" icon="pi pi-pencil" outlined rounded class="mr-2"
+                                @click="(data.editOpen = true), (data.club = slotProps.data)"
+                        />
+                        <Button icon="pi pi-sync" outlined rounded severity="warn" class="mr-2" @click="syncResourcesConfirm(slotProps.data)"></Button>
                         <Button v-show="can(['playtomic.club_delete'])" icon="pi pi-trash" outlined rounded severity="danger" @click="deleteDialog = true; data.club = slotProps.data" />
                     </template>
                 </Column>

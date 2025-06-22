@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import { watchEffect } from "vue";
+import {getCurrentInstance, watchEffect} from "vue";
 
 const props = defineProps({
     show: Boolean,
@@ -40,7 +40,6 @@ watchEffect(() => {
         form.booking_hour = props.club?.booking_hour;
     }
 });
-
 
 </script>
 

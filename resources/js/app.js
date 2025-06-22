@@ -10,6 +10,8 @@ import Aura from '@primevue/themes/aura';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
+import Toast from 'primevue/toast';;
+import toastPlugin from './composables/toastPlugin'
 
 import '@/sakai/assets/styles.scss';
 import '@/sakai/assets/tailwind.css';
@@ -35,18 +37,16 @@ createInertiaApp({
                 }
             })
             .use(ToastService)
+            .component('Toast', Toast)
+            .use(toastPlugin)
             .use(ConfirmationService)
             .mixin({
                 methods: {
-                    can: function (permissions) {
-                        var allPermissions = this.$page.props.auth.can;
-                        var hasPermission = false;
-                        permissions.forEach(function (item) {
-                            if (allPermissions[item]) hasPermission = true;
-                        });
-                        return hasPermission;
-                    },
-                },
+                    can(permissions) {
+                        const allPermissions = this.$page.props.auth.can;
+                        return permissions.some(item => allPermissions[item]);
+                    }
+                }
             })
             .mount(el);
     },
