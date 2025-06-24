@@ -5,6 +5,7 @@ namespace App\Models;
 use \DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -48,7 +49,6 @@ class Booking extends Model
         'timetables',
         'status',
         'started_at',
-        'timetable_id',
         'created_by',
         'public',
         'booked_at',
@@ -89,7 +89,6 @@ class Booking extends Model
         'resources',
         'timetables',
         'status',
-        'timetable_id',
         'started_at',
         'created_by',
         'public',
@@ -124,8 +123,9 @@ class Booking extends Model
         return $this->belongsTo(Timetable::class);
     }
 
-    public function scheduledJobs(){
-        return $this->hasMany(ScheduledJob::class);
+    public function scheduledJobs(): MorphMany
+    {
+        return $this->morphMany(ScheduledJob::class, 'schedulable');
     }
 
     protected function serializeDate(DateTimeInterface $date)

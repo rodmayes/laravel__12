@@ -6,11 +6,10 @@ use App\Jobs\Playtomic\LaunchPrebookingJob;
 use App\Jobs\Playtomic\UserLoginJob;
 use App\Models\Booking;
 use App\Models\Resource;
-use App\Models\ScheduledJob;
 use App\Models\Timetable;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PlaytomicBookingService
 {
@@ -25,7 +24,7 @@ class PlaytomicBookingService
 
     public function processBookingsForUser($bookings, $runNow = false): void
     {
-        Log::debug("[Start] Booking process for user: {$this->user->email}");
+        Log::debug("[Start] Booking process for user: {$this->userPlaytomic->email}");
 
         foreach ($bookings as $booking) {
             $this->processSingleBooking($booking, $runNow);
@@ -34,27 +33,25 @@ class PlaytomicBookingService
         Log::info('Booking job scheduling finished');
     }
 
-
     public function processSingleBooking(Booking $booking, bool $runNow = false): void
     {
-        // 📅 Fecha de ejecución base (día de apertura de reservas)
         $executionDate = $booking->executionDate;
+        $executionDate1MinutBefore = $executionDate->copy()->subMinute();
 
-        $job = new UserLoginJob($this->userPlaytomic->id);
+        // Crear el job con UUID manual
+        $loginJob = new UserLoginJob($this->userPlaytomic->id);
+        $loginJob->uuid = (string) Str::uuid();
 
-        if ($runNow) {
-            Log::debug('Login Execution now: ' .now()->format('Y-m-d H:i:s'));
-            dispatch($job);
-        }else{
-            $executionDate1MinutBefore = $executionDate->copy()->subMinute();
-            Log::debug('Login Execution date: ' . $executionDate1MinutBefore);
-            dispatch($job->delay($executionDate1MinutBefore));
-        }
+        $runNow
+            ? dispatch($loginJob)
+            : dispatch($loginJob->delay($executionDate1MinutBefore));
 
-        ScheduledJob::create([
-            'booking_id' => $booking->id,
-            'job_class' => LaunchPrebookingJob::class,
-            'scheduled_for' => $executionDate
+        $booking->scheduledJobs()->create([
+            'job_id'         => $loginJob->uuid,
+            'job_type'       => get_class($loginJob),
+            'scheduled_for'  => $executionDate1MinutBefore,
+            'payload'        => ['user_id' => $this->userPlaytomic->id, 'action' => 'login'],
+            'status'         => 'pending'
         ]);
 
         $this->enqueuePrebookingJobs($booking, $executionDate, $runNow);
@@ -62,30 +59,35 @@ class PlaytomicBookingService
 
     protected function enqueuePrebookingJobs(Booking $booking, $executionDate, $runNow): void
     {
-        $timetables = Timetable::whereIn('id', explode(",", $booking->timetables))
-            ->orderByRaw(DB::raw("FIELD(id, {$booking->timetables})"))
+        $timetableIds = array_map('intval', explode(',', $booking->timetables));
+        $timetables = Timetable::whereIn('id', $timetableIds)
+            ->orderByRaw('FIELD(id, ' . implode(',', $timetableIds) . ')')
             ->get();
 
-        $resources = Resource::whereIn('id', explode(",", $booking->resources))
-            ->orderByRaw(DB::raw("FIELD(id, {$booking->resources})"))
+        $resourceIds = array_map('intval', explode(',', $booking->resources));
+        $resources = Resource::whereIn('id', $resourceIds)
+            ->orderByRaw('FIELD(id, ' . implode(',', $resourceIds) . ')')
             ->get();
 
         $pref = $booking->booking_preference;
         $primaryItems = $pref === 'timetable' ? $timetables : $resources;
         $secondaryItems = $pref === 'timetable' ? $resources : $timetables;
 
-        // Log reset
         Booking::withoutEvents(function () use ($booking) {
             $booking->log = null;
             $booking->save();
         });
 
-        // Only 2 first jobs interval execution must be 1s
         $delaySeconds = 0;
 
         foreach ($primaryItems as $p1) {
             foreach ($secondaryItems as $p2) {
                 [$resource, $timetable] = $pref === 'timetable' ? [$p2, $p1] : [$p1, $p2];
+
+                $jobTime = match (true) {
+                    $delaySeconds < 3 => $executionDate->copy()->addSeconds($delaySeconds),
+                    default => $executionDate->copy()->addSeconds(2),
+                };
 
                 $job = new LaunchPrebookingJob(
                     $this->userPlaytomic->id,
@@ -93,25 +95,22 @@ class PlaytomicBookingService
                     $resource->id,
                     $timetable->id
                 );
+                $job->uuid = (string) Str::uuid();
 
-                // Definir el tiempo de ejecución
-                $jobTime = match (true) {
-                    $delaySeconds < 3 => $executionDate->copy()->addSeconds($delaySeconds),
-                    default => $executionDate->copy()->addSeconds(2),
-                };
+                $runNow
+                    ? dispatch($job)
+                    : dispatch($job->delay($jobTime));
 
-                if ($runNow) {
-                    Log::debug('Booking Execution now: ' . now()->format('Y-m-d H:i:s'));
-                    dispatch($job);
-                } else {
-                    Log::debug('Booking Execution date: ' . $jobTime);
-                    dispatch($job->delay($jobTime));
-                }
-
-                ScheduledJob::create([
-                    'booking_id' => $booking->id,
-                    'job_class' => LaunchPrebookingJob::class,
-                    'scheduled_for' => $jobTime
+                $booking->scheduledJobs()->create([
+                    'job_id'        => $job->uuid,
+                    'job_type'      => get_class($job),
+                    'scheduled_for' => $jobTime,
+                    'payload'       => [
+                        'resource_id' => $resource->id,
+                        'timetable_id' => $timetable->id,
+                        'action'      => 'prebooking'
+                    ],
+                    'status'         => 'pending'
                 ]);
 
                 $delaySeconds++;

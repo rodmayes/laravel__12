@@ -2,6 +2,9 @@
 import { useForm } from "@inertiajs/vue3";
 import { watch, ref } from "vue";
 
+import { loadToast } from '@/composables/loadToast';
+loadToast();
+
 const props = defineProps({
     show: Boolean,
     title: String,

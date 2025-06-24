@@ -1,6 +1,5 @@
 <script setup>
 import AppLayout from "@/sakai/layout/AppLayout.vue";
-import Edit from "@/Pages/Playtomic/Resource/Edit.vue";
 import { useForm } from "@inertiajs/vue3";
 import { router } from '@inertiajs/vue3';
 
@@ -108,6 +107,12 @@ const oStatus = ref([
     { name: 'Time Out', value: 'time-out' }
 ]);
 
+const popoverResources = ref();
+
+const toggleResources = (event) => {
+    popoverResources.value.toggle(event);
+}
+
 const breadcrum = ref([
     { label: 'Playtomic' },
     { label: props.title, url: route('playtomic.bookings.index') }
@@ -121,7 +126,7 @@ const breadcrum = ref([
                 <template #start>
                     <Button
                         v-show="can(['playtomic.booking_create'])"
-                        label="Create"
+                        label="Add Booking"
                         @click="router.visit(route('playtomic.bookings.create'))"
                         icon="pi pi-plus"
                         severity="success"
@@ -129,13 +134,11 @@ const breadcrum = ref([
                     />
                 </template>
                 <template #end>
-                    <Select v-model="data.params.club" :options="props.clubs" optionValue="id" optionLabel="name" placeholder="Filter byClub" showClear @change="fetchData" class="mr-2" />
+                    <Select v-model="data.params.club" :options="props.clubs" optionValue="id" optionLabel="name" placeholder="Filter by Club" showClear @change="fetchData" class="mr-2" />
                     <Select v-model="data.params.player" :options="props.players" optionValue="id" optionLabel="name" placeholder="Filter by Player" showClear @change="fetchData" class="mr-2" />
                     <SelectButton v-model="data.params.status" :options="oStatus" optionValue="value" optionLabel="name" @change="fetchData" />
                 </template>
             </Menubar>
-
-            <Edit :show="data.editOpen" @close="data.editOpen = false" :resource="data.booking" :title="props.title" @updated="fetchData" :clubs="props.clubs" :timetables="props.timetables"/>
 
             <DataTable
                 :value="itemsRef.data"
@@ -174,49 +177,56 @@ const breadcrum = ref([
 
                 <Column field="id" header="No" sortable />
                 <Column field="player.name" header="Player" sortable />
-                <Column field="started_at" header="Start at" sortable />
-                <Column field="timestable.name" header="Timetable" sortable />
+                <Column field="started_at" header="Book day" sortable>
+                    <template #body="slotProps">
+                        {{ formatDate(parseISO(slotProps.data.started_at)) }}
+                    </template>
+                </Column>
+                <Column field="timetables" header="Timetables" sortable>
+                    <template #body="slotProps">
+                        <Tag v-for="t in slotProps.data?.timetablesNames" :key="t.id" :value="t.name"/>
+                    </template>
+                </Column>
                 <Column field="club.name" header="Club" sortable />
 
                 <!-- Columna: Fecha modificada -->
-                <Column field="modified_at" header="Fecha modificada" sortable>
+                <Column field="modified_at" header="Job date" sortable>
                     <template #body="slotProps">
-            <span :class="{ 'text-red-500': isToday(parseISO(slotProps.data.modified_at)) }">
-              {{ formatDate(parseISO(slotProps.data.modified_at)) }}
-            </span>
+                    <span :class="{ 'text-red-500': isToday(parseISO(slotProps.data.modified_at)) }">
+                      {{ formatDate(parseISO(slotProps.data.modified_at)) }}
+                    </span>
                     </template>
                 </Column>
 
-                <!-- Columna: Estado visual -->
-                <Column header="Estado">
+                <Column header="Options">
                     <template #body="slotProps">
                         <div class="flex items-center gap-1">
                             <!-- booking_preference -->
-                            <span v-if="slotProps.data.booking_preference === 'timetable'" class="text-pink-400" :title="`Preference ${slotProps.data.booking_preference}`">
-                            <i class="fas fa-clock"></i>
+                            <span v-if="slotProps.data.booking_preference === 'timetable'" class="text-pink-400" v-tooltip.top="`Preference ${slotProps.data.booking_preference}`">
+                            <i class="pi pi-clock"></i>
                             </span>
-                            <span v-else class="text-blue-500" :title="`Preference ${slotProps.data.booking_preference}`">
-                            <i class="fas fa-table-tennis"></i>
+                            <span v-else class="text-blue-500" v-tooltip.top="`Preference ${slotProps.data.booking_preference}`">
+                            <i class="pi pi-table-tennis"></i>
                             </span>
                             <!-- status -->
-                            <span v-if="slotProps.data.status === 'on-time'" class="text-green-800" title="On Time">
-                            <i class="fas fa-calendar"></i>
+                            <span v-if="slotProps.data.status === 'on-time'" class="text-green-800" v-tooltip.top="'On Time'">
+                            <i class="pi pi-calendar"></i>
                             </span>
-                            <span v-else-if="slotProps.data.status === 'time-out'" class="text-indigo-900" title="Time out">
-                            <i class="fas fa-calendar-times"></i>
+                            <span v-else-if="slotProps.data.status === 'time-out'" class="text-indigo-900" v-tooltip.top="'Time out'">
+                            <i class="pi pi-calendar-times"></i>
                             </span>
-                            <span v-else class="text-gray-800" title="Closed">
-                            <i class="fas fa-times-circle"></i>
+                            <span v-else class="text-gray-800" v-tooltip.top="'Closed'">
+                            <i class="pi pi-times-circle"></i>
                             </span>
                             <!-- isBooked / fecha -->
-                            <span v-if="slotProps.data.isBooked" class="text-green-800" title="Booked!!">
-                            <i class="far fa-smile-beam"></i>
+                            <span v-if="slotProps.data.isBooked" class="text-green-800" v-tooltip.top="'Booked!!'">
+                            <i class="pi pi-smile-beam"></i>
                             </span>
-                            <span v-else-if="isPast(parseISO(slotProps.data.modified_at)) || isToday(parseISO(slotProps.data.modified_at))" class="text-red-800" title="No Booked!!">
-                            <i class="far fa-dizzy"></i>
+                            <span v-else-if="isPast(parseISO(slotProps.data.modified_at)) || isToday(parseISO(slotProps.data.modified_at))" class="text-red-800" v-tooltip.top="'No Booked!!'">
+                            <i class="pi pi-dizzy"></i>
                             </span>
-                            <span v-else class="text-primary-800" title="Waiting">
-                            <i class="far fa-grimace"></i>
+                            <span v-else class="text-primary-800" v-tooltip.top="'Waiting'">
+                            <i class="pi pi-grimace"></i>
                             </span>
                         </div>
                     </template>
@@ -224,13 +234,13 @@ const breadcrum = ref([
 
                 <Column header="Resources">
                     <template #body="slotProps">
-                        <Tag :severity="slotProps.data.visible == 1 ? '' : 'secondary'" rounded :icon="slotProps.data.visible == 1 ? 'pi pi-eye' : 'pi pi-eye-slash'"/>
+                        <Button @click="(event) => { data.booking = slotProps.data; toggleResources(event); }" variant="text">Resources</Button>
                     </template>
                 </Column>
 
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
-                        <Button v-show="can(['playtomic.booking_edit'])" icon="pi pi-pencil" outlined rounded class="mr-2" @click="(data.editOpen = true), (data.booking = slotProps.data)"/>
+                        <Button v-show="can(['playtomic.booking_edit'])" outlined rounded class="mr-2" @click="router.visit(route('playtomic.bookings.edit', slotProps.data.id))" icon="pi pi-pencil"/>
                         <Button v-show="can(['playtomic.booking_delete'])" icon="pi pi-trash" outlined rounded severity="danger" @click="deleteDialog = true; data.booking = slotProps.data"/>
                     </template>
                 </Column>
@@ -247,6 +257,17 @@ const breadcrum = ref([
                 </template>
             </Dialog>
         </div>
+
+        <Popover ref="popoverResources">
+            <div>
+                <h3>Resources</h3>
+            </div>
+            <div class="px-3 py-2">
+                <p v-for="r in data.booking?.resourcesNames" :key="r.id">
+                <span>{{ r.name }}</span>
+                </p>
+            </div>
+        </Popover>
     </app-layout>
 </template>
 

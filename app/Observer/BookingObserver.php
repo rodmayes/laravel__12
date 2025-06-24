@@ -3,6 +3,7 @@
 namespace App\Observer;
 
 use App\Models\Booking;
+use App\Models\ScheduledJob;
 use App\Services\BookingJobScheduler;
 use App\Services\Playtomic\PlaytomicBookingService;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,7 @@ class BookingObserver
      */
     public function created(Booking $booking)
     {
+        // Create single job
         (new PlaytomicBookingService($booking->player))->processSingleBooking($booking);
         activity()
             ->performedOn($booking)
@@ -44,18 +46,19 @@ class BookingObserver
     }
 
     /**
-     * Handle the Booking "deleted" event.
+     * Handle the Booking "deleting" event.
      *
      * @param  \App\Models\Booking  $booking
      * @return void
      */
-    public function deleted(Booking $booking)
+    public function deleting(Booking $booking)
     {
-        ScheduledJob::where('booking_id', $booking->id)->delete();
+        app(BookingJobScheduler::class)->deletePendingJobsForBooking($booking);
+
         activity()
             ->performedOn($booking)
             ->causedBy(Auth::user())
-            ->withProperties(['model' =>$booking->toArray()])
+            ->withProperties(['model' => $booking->toArray()])
             ->log('Booking - deleted');
     }
 

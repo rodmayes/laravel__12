@@ -66,12 +66,13 @@ Route::prefix('bookings')->name('bookings.')->group(function () {
     Route::get('', [BookingController::class, 'index'])->name('index');
     Route::post('getData', [BookingController::class, 'getData'])->name('getData');
     Route::get('create', [BookingController::class, 'create'])->name('create');
-    Route::get('edit', [BookingController::class, 'edit'])->name('edit');
+    Route::get('edit/{booking}', [BookingController::class, 'edit'])->name('edit');
     Route::post('refreshData', [BookingController::class, 'refresData'])->name('refreshData');
-    Route::put('{resource}', [BookingController::class, 'update'])->name('update');
+    Route::put('{booking}', [BookingController::class, 'update'])->name('update');
     Route::post('', [BookingController::class, 'store'])->name('store');
     Route::get('get-list',[BookingController::class, 'getList'])->name('get-list');
-    Route::delete('{resource}',[BookingController::class, 'destroy'])->name('destroy');
+    Route::delete('{booking}',[BookingController::class, 'destroy'])->name('destroy');
+    Route::get('{booking}',[BookingController::class, 'toggleBooked'])->name('toggle-booked');
 });
 
 // USERS

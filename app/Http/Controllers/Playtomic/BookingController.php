@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Playtomic;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Playtomic\BookingStoreRequest;
+use App\Http\Requests\Playtomic\BookingUpdateRequest;
 use App\Http\Resources\BookingCalendarResource;
 use App\Mail\PlaytomicBookingConfirmation;
 use App\Models\Booking;
@@ -11,7 +13,6 @@ use App\Models\Resource;
 use App\Models\Timetable;
 use App\Models\User;
 use App\Services\Playtomic\PlaytomicHttpService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -53,12 +54,30 @@ class BookingController extends Controller
 
     public function getData(Request $request): LengthAwarePaginator
     {
-        return $this->getDataQuery($request)->paginate($request->perPage ?? 20);
+        $items = $this->getDataQuery($request)->paginate($request->perPage ?? 20);
+        foreach ($items as $booking) {
+            $ids = array_filter(explode(',', $booking->resources));
+            $resources = Resource::whereIn('id', $ids)
+                ->get(['id', 'name'])
+                ->map(fn($r) => ['id' => $r->id, 'name' => $r->name])
+                ->toArray();
+
+            $booking->resourcesNames = $resources;
+
+            $ids = array_filter(explode(',', $booking->timetables));
+            $timetables = Timetable::whereIn('id', $ids)
+                ->get(['id', 'name'])
+                ->map(fn($r) => ['id' => $r->id, 'name' => $r->name])
+                ->toArray();
+
+            $booking->timetablesNames = $timetables;
+        }
+        return $items;
     }
 
     private function getDataQuery(Request $request)
     {
-        $items = Booking::query()->with('club', 'timetable');
+        $items = Booking::query()->with('club', 'player');
         if ($request->has('search')) {
             $items->where('name', 'LIKE', "%" . $request->search . "%");
             $items->orWhere('playtomic_id', 'LIKE', "%" . $request->search . "%");
@@ -118,6 +137,7 @@ class BookingController extends Controller
         $bookingPreference = collect(Booking::PREFERENCES);
         $status = collect(Booking::STATUS);
         $durations = collect(Booking::DURATION);
+        $player = auth()->user();
 
         return Inertia::render('Playtomic/Booking/Create', [
             'title'         => 'Bookings',
@@ -127,25 +147,29 @@ class BookingController extends Controller
             'resources'     => $resources,
             'bookingPreferences' => $bookingPreference,
             'status'        => $status,
-            'durations'     => $durations
+            'durations'     => $durations,
+            'player'         => $player
         ]);
     }
 
-    public function store(Request $request)
+    public function store(BookingStoreRequest $request)
     {
         try{
-            $club = Club::find($request->club);
+            $user = auth()->user();
+            $club = Club::find($request->club_id);
             $booking = Booking::create([
+                'club_id' => $club->id,
                 'resources' => implode(",",$request->resources),
                 'timetables' => implode(",", $request->timetables),
-                'created_by' => Auth::user()->id,
-                'public' => isset($request->public) ? $request->public : false,
-                'name' => $request->club->name.' '.$request->started_at,
-                'started_at' => $request->started_at ?: Carbon::now()->addDays((int)$club->days_min_booking),
-                'player_email' => !$request->player ? Auth::user()->email : $request->player
-                ]);
+                'created_by' => $user->id,
+                'public' => (bool)$request->public,
+                'name' => $club->name.' '.$request->started_at,
+                'started_at' => Carbon::parse($request->started_at) ?: Carbon::now()->addDays((int)$club->days_min_booking),
+                'player_email' => !$request->player ? $user->email : $request->player,
+                'booking_preference' => $request->booking_preference
+            ]);
 
-            if(Carbon::now(env('APP_DATETIME_ZONE'))->startOfDay()->diffInDays($request->started_at->startOfDay()) >= (int)$club->days_min_booking){
+            if(Carbon::now(env('APP_DATETIME_ZONE'))->startOfDay()->diffInDays($booking->started_at->startOfDay()) >= (int)$club->days_min_booking){
                 $booking->status = Booking::STATUS_ONTIME;
             }
             else{
@@ -156,25 +180,52 @@ class BookingController extends Controller
 
             return redirect()->route('playtomic.bookings.index')->with('success', $booking->name . ' created successfully.');
         }catch (\Exception $e){
-            return back()->with('error', 'Error creating ' . $request->name . $e->getMessage());
+            Log::error('Error creating Booking '. $e->getMessage(), $request->all());
+            return back()->with('error', 'Error creating ' . $club->name.' '.$request->started_at . $e->getMessage());
         }
     }
 
-    public function update(Request $request)
+    public function edit(Booking $booking): Response
+    {
+        $clubs = Club::all();
+        $resources = Resource::visible()->orderBy('name')->get();
+        $timetables = Timetable::all();
+        $players = User::withRole('playtomic')->get();
+        $bookingPreference = collect(Booking::PREFERENCES);
+        $status = collect(Booking::STATUS);
+        $durations = collect(Booking::DURATION);
+
+        return Inertia::render('Playtomic/Booking/Edit', [
+            'title'         => 'Bookings',
+            'booking'       => $booking,
+            'clubs'         => $clubs,
+            'players'       => $players,
+            'timetables'    => $timetables,
+            'resources'     => $resources,
+            'bookingPreferences' => $bookingPreference,
+            'status'        => $status,
+            'durations'     => $durations
+        ]);
+    }
+
+    public function update(Booking $booking, BookingUpdateRequest $request)
     {
         try{
-            $club = Club::find($request->club);
-            $booking = Booking::update([
+            $user = auth()->user();
+            $club = Club::find($request->club_id);
+            $booking->update([
+                'club_id' => $club->id,
                 'resources' => implode(",",$request->resources),
                 'timetables' => implode(",", $request->timetables),
-                'created_by' => Auth::user()->id,
-                'public' => isset($request->public) ? $request->public : false,
-                'name' => $request->club->name.' '.$request->started_at,
-                'started_at' => $request->started_at ?: Carbon::now()->addDays((int)$club->days_min_booking),
-                'player_email' => !$request->player ? Auth::user()->email : $request->player
+                'created_by' => $user->id,
+                'public' => (bool)$request->public,
+                'name' => $club->name.' '.$request->started_at,
+                'started_at' => Carbon::parse($request->started_at) ?: Carbon::now()->addDays((int)$club->days_min_booking),
+                'player_email' => !$request->player ? $user->email : $request->player,
+                'booking_preference' => $request->booking_preference
             ]);
 
-            if(Carbon::now(env('APP_DATETIME_ZONE'))->startOfDay()->diffInDays($request->started_at->startOfDay()) >= (int)$club->days_min_booking){
+            if(Carbon::now(env('APP_DATETIME_ZONE'))->startOfDay()->diffInDays($booking->started_at->startOfDay()) >= (int)$club->days_min_booking){
                 $booking->status = Booking::STATUS_ONTIME;
             }
             else{
@@ -183,21 +234,21 @@ class BookingController extends Controller
 
             $booking->save();
 
-            return back()->with('success', $booking->name. ' created successfully.');
+            return redirect()->route('playtomic.bookings.index')->with('success', $booking->name . ' updated successfully.');
         }catch (\Exception $e){
-            return back()->with('error', 'Error creating ' . $booking->name . $e->getMessage());
+            return back()->with('error', 'Error updating ' . $booking->name . $e->getMessage());
         }
     }
 
-    public function generateLinks(Booking $booking)
+    public function destroy(Booking $booking)
     {
-        //abort_if(Gate::allows('hasRole', ['admin','playtomic']), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        return view('playtomic.booking.generate-links', compact('booking'));
-    }
+        try{
+            $booking->delete();
 
-    public function prebooking(){
-        //abort_if(Gate::allows('hasRole', ['admin','playtomic']), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        return view('playtomic.booking.pre-booking');
+            return redirect()->route('playtomic.bookings.index')->with('success', $booking->name . ' deleted successfully.');
+        }catch (\Exception $e){
+            return back()->with('error', 'Error deleting ' . $booking->name . $e->getMessage());
+        }
     }
 
     public function startBooking(Booking $booking, Resource $resource, Timetable $timetable, User $user = null){
@@ -329,6 +380,15 @@ class BookingController extends Controller
             $this->log['data'][] = 'Confirmation match error'. $e->getMessage();
             Log::error('Confirmation match error '.$e->getMessage());
             return ['status' => 'fail', 'message' => 'Confirmation match error '.$e->getMessage()];
+        }
+    }
+
+    public function toggleBooked(Booking $booking){
+        try{
+            $booking->toggleBooked();
+            return back()->with('success', $booking->name . ' booked status changed successfully.');
+        }catch (\Exception $e){
+            return back()->with('error', 'Error status changed ' . $booking->name . $e->getMessage());
         }
     }
 }

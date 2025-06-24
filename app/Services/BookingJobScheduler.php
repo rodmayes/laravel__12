@@ -10,14 +10,15 @@ use Illuminate\Support\Facades\DB;
 
 class BookingJobScheduler
 {
-    public function reschedule(Booking $booking)
+    public function reschedule(Booking $booking): void
     {
-        // 1️⃣ Eliminar jobs de la cola (pendientes) y scheduled_jobs
+        // 🧹 1. Cancelar todos los jobs anteriores
         $this->deletePendingJobsForBooking($booking);
 
-        // 3️⃣ Reprogramar jobs con lógica actualizada
+        // 🔁 2. Crear los nuevos jobs
         $service = new PlaytomicBookingService($booking->player);
         $service->processSingleBooking($booking);
+
         activity()
             ->performedOn($booking)
             ->causedBy(Auth::user())
@@ -25,17 +26,17 @@ class BookingJobScheduler
             ->log('Booking - recreating jobs');
     }
 
-    private function deletePendingJobsForBooking(Booking $booking): void
+    public function deletePendingJobsForBooking(Booking $booking): void
     {
-        DB::table('jobs')
-            ->where('queue', 'default')
-            ->where('payload', 'like', '%bookingId";i:' . $booking->id . ';%')
-            ->delete();
+        // 🗑️ Eliminar jobs de la cola (Laravel) por UUID
+        $booking->scheduledJobs()->each(function ($scheduledJob) {
+            DB::table('jobs')
+                ->where('uuid', $scheduledJob->job_id)
+                ->delete();
 
-        $booking->scheduledJobs()->delete();
+            $scheduledJob->delete();
+        });
 
-        // 🧹 2. Eliminar jobs anteriores
-        //ScheduledJob::where('booking_id', $booking->id)->delete();
         activity()
             ->performedOn($booking)
             ->causedBy(Auth::user())

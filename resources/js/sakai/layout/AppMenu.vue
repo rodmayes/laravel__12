@@ -58,6 +58,7 @@ const model = ref([
                     { label: 'Telescope', icon: 'pi pi-fw pi-user', to: '/telescope', can:'user.read' },
                     { label: 'Horizon', icon: 'pi pi-fw pi-user', to: '/horizon', can:'user.read' },
                     { label: 'Pulse', icon: 'pi pi-fw pi-user', to: '/pulse', can:'user.read' },
+                    { label: 'Jobs', icon: 'pi pi-fw pi-cog', to: '/scheduled-jobs', can:'user.read' },
                 ]
             },
 

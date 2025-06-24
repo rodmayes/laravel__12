@@ -4,12 +4,12 @@ use App\Models\User;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ScheduledJobController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +23,7 @@ use App\Http\Controllers\PermissionController;
 */
 
 Route::get('/', function () {
-    return redirect('login');  
+    return redirect('login');
 });
 
 Route::get('/dashboard', function () {
@@ -41,7 +41,7 @@ Route::middleware('auth', 'verified')->group(function () {
 
     Route::resource('/user', UserController::class)->except('create', 'show', 'edit');
     Route::post('/user/destroy-bulk', [UserController::class, 'destroyBulk'])->name('user.destroy-bulk');
-    
+
     Route::resource('/role', RoleController::class)->except('create', 'show', 'edit');
 
     Route::resource('/permission', PermissionController::class)->except('create', 'show', 'edit');
@@ -78,5 +78,15 @@ Route::get('/list', function () {
 //     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
+
+// SCHEDULEDJOBS
+Route::prefix('scheduled-jobs')->name('scheduled-jobs.')->group(function () {
+    Route::get('/', [ScheduledJobController::class, 'index'])->name('index');
+    Route::post('getData', [ScheduledJobController::class, 'getData'])->name('getData');
+    Route::post('refreshData', [ScheduledJobController::class, 'refresData'])->name('refreshData');
+    Route::post('/{scheduledJob}/cancel', [ScheduledJobController::class, 'cancel'])->name('cancel');
+    Route::put('/{scheduledJob}', [ScheduledJobController::class, 'update'])->name('update');
+    Route::delete('/{scheduledJob}', [ScheduledJobController::class, 'destroy'])->name('destroy');
+});
 
 require __DIR__.'/auth.php';

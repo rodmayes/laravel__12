@@ -1,6 +1,8 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
 import { watchEffect } from "vue";
+import { loadToast } from '@/composables/loadToast';
+loadToast();
 
 const props = defineProps({
     show: Boolean,

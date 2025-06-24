@@ -74,4 +74,23 @@ class User extends Authenticatable
             $q->where('name', $roleName);
         });
     }
+
+
+    public function setNameAttribute($value){
+        $this->attributes['name'] = ucwords(trim($value));
+    }
+
+    public function setEmailAttribute($value){
+        $this->attributes['email'] = mb_strtolower(trim($value));
+    }
+
+    public function canImpersonate()
+    {
+        // For example
+        return $this->is_admin == 1;
+    }
+
+    public function scopeByEmail($query, $value){
+        return $query->where('email', $value);
+    }
 }

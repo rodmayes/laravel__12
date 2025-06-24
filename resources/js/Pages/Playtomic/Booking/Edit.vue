@@ -1,57 +1,60 @@
 <script setup>
 import AppLayout from "@/sakai/layout/AppLayout.vue";
 import { useForm } from '@inertiajs/vue3';
-import { ref, watch  } from "vue";
+import { ref, watch, onMounted } from "vue";
 import axios from 'axios';
 
 import { loadToast } from '@/composables/loadToast';
-import { formatDateForInput, formatDateLocal} from "@/composables/useFormatters.js";
+import { formatDateForInput, formatDateLocal } from "@/composables/useFormatters.js";
 loadToast();
 
 const props = defineProps({
+    booking: Object, // 🆕 Aquí recibimos el booking a editar
     clubs: Object,
     resources: Object,
     timetables: Object,
     bookingPreferences: Object,
     players: Object,
     durations: Object,
-    status: Object,
-    startDate: String,
     title: String,
-    player: Object
 });
 
 const form = useForm({
-    started_at: props.startDate || formatDateForInput(new Date()),
-    club_id: '',
-    resources: [],
-    timetables: [],
-    booking_preference: '',
-    player_email: props.player?.email,
-    duration: 90,
-    public: false,
+    started_at: new Date(props.booking.started_at ?? new Date()),
+    club_id: props.booking.club_id,
+    resources: (typeof props.booking.resources === 'string' ? props.booking.resources.split(',').map(Number) : props.booking.resources) ?? [],
+    timetables: (typeof props.booking.timetables === 'string' ? props.booking.timetables.split(',').map(Number) : props.booking.timetables) ?? [],
+    booking_preference: props.booking.booking_preference,
+    player_email: props.booking.player_email,
+    duration: props.booking.duration,
+    public: props.booking.public,
 });
 
 const submit = () => {
     form.started_at = formatDateLocal(form.started_at);
-    form.post(route('playtomic.bookings.store'), {
-        onSuccess: () => form.reset(),
-    });
+    form.put(route('playtomic.bookings.update', props.booking.id));
 };
 
 const availableResources = ref(props.resources);
 
+onMounted(async () => {
+    if (form.club_id) {
+        const response = await axios.post(route('playtomic.resources.filter', { club: form.club_id }));
+        availableResources.value = response.data;
+    }
+});
+
 watch(() => form.club_id, async (newClubId) => {
     if (!newClubId) {
-        availableResources.value = [];      // Vaciar recursos
-        form.resources = [];                // Limpiar selección
+        availableResources.value = [];
+        form.resources = [];
         return;
     }
 
     try {
         const response = await axios.post(route('playtomic.resources.filter', { club: newClubId }));
         availableResources.value = response.data;
-        form.resources = [];
+        form.resources = []; // limpiar selección al cambiar club
     } catch (error) {
         console.error('Error fetching resources:', error);
         availableResources.value = [];
@@ -61,22 +64,21 @@ watch(() => form.club_id, async (newClubId) => {
 const breadcrum = ref([
     { label: 'Playtomic' },
     { label: props.title, url: route('playtomic.bookings.index') },
-    { label: 'Create', url: route('playtomic.bookings.create') }
+    { label: 'Edit', url: route('playtomic.bookings.edit', props.booking.id) }
 ]);
 </script>
 
 <template>
     <app-layout :items="breadcrum">
         <div class="card">
-            <h1 class="text-2xl font-bold mb-4">Create Booking</h1>
+            <h1 class="text-2xl font-bold mb-4">Edit Booking</h1>
             <form @submit.prevent="submit" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Columna izquierda: Date Picker -->
+                    <!-- Date Picker -->
                     <div class="md:col-span-1">
                         <label value="Start Date" class="required" />
                         <DatePicker
                             v-model="form.started_at"
-                            :modelValue="form.started_at"
                             inline
                             dateFormat="yy-mm-dd"
                             :touchUI="false"
@@ -87,9 +89,9 @@ const breadcrum = ref([
                         <small v-if="form.errors.started_at" class="text-red-500">{{ form.errors.started_at }}</small>
                     </div>
 
-                    <!-- Columna derecha: todos los campos en vertical -->
+                    <!-- Resto de campos -->
                     <div class="md:col-span-2 flex flex-col gap-4">
-                        <div  class="flex flex-col gap-2">
+                        <div class="flex flex-col gap-2">
                             <label class="required">Club</label>
                             <Select
                                 v-model="form.club_id"
@@ -171,7 +173,7 @@ const breadcrum = ref([
                     </div>
                 </div>
                 <div class="flex justify-end mt-6 gap-2">
-                    <Button type="submit" label="Save"/>
+                    <Button type="submit" label="Update" />
                     <a :href="route('playtomic.bookings.index')" class="border border-gray-300 px-4 py-2 rounded-md">
                         Cancel
                     </a>
