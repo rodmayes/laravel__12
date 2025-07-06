@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         $userEster = User::where('email', 'rodmayes@gmail.com')->first();
 
         if($userEster){
-            $userEster->assignRole('suepradmin');
+            $userEster->assignRole('superadmin');
         }
     }
 }
