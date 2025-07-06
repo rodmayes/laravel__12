@@ -32,7 +32,7 @@ const cards = computed(() => props.items.data ?? []);
                         'text-blue-700': item.status === 'closed',
                         'text-red-700': item.status === 'time-out'
                     }">
-                        {{ item.status }}
+                        [{{item.id}}] {{ item.status }}
                     </span>
                 </div>
                 <p><strong>Booking day: </strong> {{ item.started_at ? formatDateLocal(parseISO(item.started_at)) : '' }}</p>
