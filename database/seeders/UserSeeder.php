@@ -13,6 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        /*
         $superadmin = User::create([
             'name'              => 'Superadmin',
             'email'             => 'superadmin@superadmin.com',
@@ -20,21 +21,12 @@ class UserSeeder extends Seeder
             'email_verified_at' => date('Y-m-d H:i')
         ]);
         $superadmin->assignRole('superadmin');
+        */
 
-        $admin = User::create([
-            'name'              => 'Admin',
-            'email'             => 'admin@admin.com',
-            'password'          => bcrypt('admin'),
-            'email_verified_at' => date('Y-m-d H:i')
-        ]);
-        $admin->assignRole('admin');
+        $userEster = User::where('email', 'rodmayes@gmail.com')->first();
 
-        $operator = User::create([
-            'name'              => 'Operator',
-            'email'             => 'operator@operator.com',
-            'password'          => bcrypt('operator'),
-            'email_verified_at' => date('Y-m-d H:i')
-        ]);
-        $operator->assignRole('operator');
+        if($userEster){
+            $userEster->assignRole('suepradmin');
+        }
     }
 }
