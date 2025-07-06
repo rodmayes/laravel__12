@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->morphs('schedulable'); // schedulable_id + schedulable_type
             $table->uuid('job_id')->index(); // Laravel 12 usa UUIDs para los jobs por defecto
+            $table->string('job_type',255);
             $table->json('payload')->nullable(); // datos adicionales del job
             $table->enum('status', ['pending', 'running', 'completed', 'failed', 'cancelled'])->default('pending');
             $table->timestamp('scheduled_for')->nullable();

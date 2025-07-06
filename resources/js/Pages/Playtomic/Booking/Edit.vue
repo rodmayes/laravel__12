@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from "@/sakai/layout/AppLayout.vue";
-import { useForm } from '@inertiajs/vue3';
+import {router, useForm } from '@inertiajs/vue3';
 import { ref, watch, onMounted } from "vue";
 import axios from 'axios';
 
@@ -32,7 +32,12 @@ const form = useForm({
 
 const submit = () => {
     form.started_at = formatDateLocal(form.started_at);
-    form.put(route('playtomic.bookings.update', props.booking.id));
+    form.put(route('playtomic.bookings.update', props.booking.id), {
+        onSuccess: () => {
+            form.reset();
+            router.visit(route('playtomic.bookings.index'));
+        }
+    });
 };
 
 const availableResources = ref(props.resources);

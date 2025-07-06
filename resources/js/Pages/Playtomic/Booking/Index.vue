@@ -134,6 +134,7 @@ onMounted(fetchData);
                           :deleteData="deleteData"
                           :router="router"
                           :can="can"
+                          @confirm-delete="deleteData"
             />
 
             <BookingCards v-else
@@ -146,6 +147,7 @@ onMounted(fetchData);
                           :deleteData="deleteData"
                           :router="router"
                           :can="can"
+                          @confirm-delete="deleteData"
             />
         </div>
     </AppLayout>
