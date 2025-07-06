@@ -78,8 +78,8 @@ const onSortChange = (event) => {
     fetchData();
 };
 
-const deleteData = () => {
-    router.delete(route('playtomic.bookings.destroy', data.booking.id), {
+const deleteData = (booking) => {
+    router.delete(route('playtomic.bookings.destroy', booking.id), {
         onSuccess: () => {
             deleteDialog.value = false;
             fetchData();
