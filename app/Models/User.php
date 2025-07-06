@@ -22,6 +22,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'login_token',
+        'login_confirmed_at',
+        'playtomic_id',
+        'playtomic_token',
+        'playtomic_refresh_token',
+        'telegram_chat_id',
     ];
 
     /**
@@ -43,8 +49,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    protected $authPasswordName = 'custom_password_field';
 
     public function getCreatedAtAttribute()
     {

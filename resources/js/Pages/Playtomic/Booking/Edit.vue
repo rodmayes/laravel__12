@@ -9,7 +9,7 @@ import { formatDateForInput, formatDateLocal } from "@/composables/useFormatters
 loadToast();
 
 const props = defineProps({
-    booking: Object, // 🆕 Aquí recibimos el booking a editar
+    booking: Object,
     clubs: Object,
     resources: Object,
     timetables: Object,

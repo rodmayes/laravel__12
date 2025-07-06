@@ -2,6 +2,9 @@
 import { useLayout } from '@/sakai/layout/composables/layout';
 import { onBeforeMount, ref, watch } from 'vue';
 import NavLink from "@/Components/NavLink.vue";
+import { usePage } from '@inertiajs/vue3';
+
+const page = usePage();
 
 const { layoutState, setActiveMenuItem, onMenuToggle } = useLayout();
 
@@ -31,16 +34,22 @@ onBeforeMount(() => {
     itemKey.value = props.parentItemKey ? props.parentItemKey + '-' + props.index : String(props.index);
 
     const activeItem = layoutState.activeMenuItem;
+    const activeByState = activeItem === itemKey.value || (activeItem && activeItem.startsWith(itemKey.value + '-'));
+    const activeByRoute = hasActiveChild(props.item);
 
-    isActiveMenu.value = activeItem === itemKey.value || activeItem ? activeItem.startsWith(itemKey.value + '-') : false;
+    isActiveMenu.value = activeByState || activeByRoute;
 });
 
 watch(
     () => layoutState.activeMenuItem,
     (newVal) => {
-        isActiveMenu.value = newVal === itemKey.value || newVal.startsWith(itemKey.value + '-');
+        const activeByState = newVal === itemKey.value || (newVal && newVal.startsWith(itemKey.value + '-'));
+        const activeByRoute = hasActiveChild(props.item);
+
+        isActiveMenu.value = activeByState || activeByRoute;
     }
 );
+
 const itemClick = (event, item) => {
     if (item.disabled) {
         event.preventDefault();
@@ -60,6 +69,19 @@ const itemClick = (event, item) => {
     setActiveMenuItem(foundItemKey);
 };
 
+const hasActiveChild = (item) => {
+    if (!item.items) return false;
+
+    return item.items.some((child) => {
+        if (child.items) {
+            return hasActiveChild(child); // soporte para sub-submenús
+        }
+
+        return child.to && page.url.startsWith(child.to);
+    });
+};
+
+
 // const checkActiveRoute = (item) => {
 //     return route.path === item.to;
 // };
@@ -73,7 +95,7 @@ const itemClick = (event, item) => {
             <span class="layout-menuitem-text">{{ item.label }}</span>
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
         </a>
-        <nav-link v-if="item.to && !item.items && item.visible !== false" @click="itemClick($event, item, index)" :href="item.to"  :class="[item.class, { 'active-route': $page.url === item.to }]">
+        <nav-link v-if="item.to && !item.items && item.visible !== false" @click="itemClick($event, item, index)" :href="item.to" :class="[item.class, { 'active-route': $page.url.startsWith(item.to) }]">
             <i :class="item.icon" class="layout-menuitem-icon"></i>
             <span class="layout-menuitem-text">{{ item.label }}</span>
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>

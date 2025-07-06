@@ -12,6 +12,7 @@ use App\Services\Playtomic\PlaytomicHttpService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,7 +27,7 @@ class ClubController extends Controller
         ]);
     }
 
-    public function refresData(Request $request)
+    public function refreshData(Request $request)
     {
         return response()->json([
             'items' => $this->getData($request),
@@ -90,7 +91,7 @@ class ClubController extends Controller
             $club->update([
                 'name' => $request->name,
                 'playtomic_id' => $request->playtomic_id,
-                'days_min_booking' => $request->padays_min_bookingssword,
+                'days_min_booking' => $request->days_min_booking,
                 'timetable_summer' => $request->timetable_summer,
                 'booking_hour' => $request->booking_hour,
             ]);

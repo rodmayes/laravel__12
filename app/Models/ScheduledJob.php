@@ -46,13 +46,24 @@ class ScheduledJob extends Model
 
     public function cancel(): void
     {
-        $this->update(['cancelled_at' => now()]);
+        $this->update([
+            'cancelled_at' => now(),
+            'status' => 'cancelled',
+        ]);
 
         if ($this->job_id && config('queue.default') === 'database') {
             DB::table('jobs')->where('uuid', $this->job_id)->delete();
         }
 
         // Si estás usando Redis, necesitas manejarlo tú (puedo ayudarte si es el caso)
+    }
+
+    public function markAsExecuted(bool $success = true): void
+    {
+        $this->update([
+            'executed_at' => now(),
+            'status' => $success ? 'success' : 'failed',
+        ]);
     }
 }
 

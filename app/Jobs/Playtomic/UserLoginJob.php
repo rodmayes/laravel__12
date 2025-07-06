@@ -4,6 +4,7 @@ namespace App\Jobs\Playtomic;
 
 use App\Models\User;
 use App\Services\Playtomic\PlaytomicHttpService;
+use App\Trait\UpdateScheduledJobTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,6 +16,7 @@ use romanzipp\QueueMonitor\Traits\IsMonitored;
 class UserLoginJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
+    use UpdateScheduledJobTrait;
 
     public string $uuid;
     protected int $userId;
@@ -36,8 +38,10 @@ class UserLoginJob implements ShouldQueue
                 Log::debug('NOT Logged');
             }
             Log::info('Logged '.$user->email);
+            $this->setScheduledJobStatus($this->uuid, 'success');
         }catch (\Exception $e){
             Log::error('Login: '.$e->getMessage());
+            $this->setScheduledJobStatus($this->uuid, 'error');
         }
     }
 }

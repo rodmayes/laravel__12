@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ScheduledJob;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Http\Request;
 
@@ -16,11 +15,10 @@ class ScheduledJobController extends Controller
         return inertia('ScheduledJobs/Index', [
             'title' => 'Scheduled Jobs',
             'filters'       => $request->all(['search', 'field', 'order']),
-            'items' =>  $this->getData($request),
         ]);
     }
 
-    public function refresData(Request $request)
+    public function refreshData(Request $request)
     {
         return response()->json([
             'items' => $this->getData($request),
@@ -40,17 +38,22 @@ class ScheduledJobController extends Controller
             $items->orWhere('job_type', 'LIKE', "%" . $request->search . "%");
             $items->orWhere('payload', 'LIKE', "%" . $request->search . "%");
         }
+
         // Ordenación múltiple
         if ($request->filled('sort')) {
-            $sortArray = json_decode($request->sort, true);
+            $sortArray = $request->sort;//json_decode($request->sort, true);
             if (is_array($sortArray)) {
                 foreach ($sortArray as $sort) {
-                    if (isset($sort['field'], $sort['order']) &&
+                    if (isset($sort['field']) &&
                         in_array($sort['field'], ['id', 'schedule_type', 'job_type','payload'])) {
-                        $items->orderBy($sort['field'], $sort['order']);
+                        $items->orderBy($sort['field'], $sort['order'] ?? 'asc');
                     }
                 }
+            }else{
+                $items->orderBy('name');
             }
+        }else{
+            $items->orderBy('name');
         }
 
         return $items;
@@ -90,6 +93,14 @@ class ScheduledJobController extends Controller
         $scheduledJob->cancel();
 
         return back()->with('success', 'Job cancelled successfully.');
+    }
+
+    public function executed(ScheduledJob $scheduledJob)
+    {
+        $scheduledJob->update(['status' => 'executed', 'executed_at' => now()]);
+        $scheduledJob->cancel();
+
+        return back()->with('success', 'Job executed successfully.');
     }
 
     public function destroy(ScheduledJob $scheduledJob)

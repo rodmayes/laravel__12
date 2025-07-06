@@ -1,18 +1,28 @@
-// Por ejemplo, en un composable: useDarkMode.js
-import { ref, watchEffect } from 'vue'
+// composables/useDarkMode.js
+import { watch } from 'vue';
 
-const darkMode = ref(localStorage.getItem('theme') === 'dark')
+export function useDarkMode(themeRef) {
+    const applyTheme = (theme) => {
+        const root = document.documentElement;
 
-watchEffect(() => {
-    if (darkMode.value) {
-        document.documentElement.classList.add('dark')
-        localStorage.setItem('theme', 'dark')
-    } else {
-        document.documentElement.classList.remove('dark')
-        localStorage.setItem('theme', 'light')
-    }
-})
+        if (theme === 'dark') {
+            root.classList.add('dark');
+        } else {
+            root.classList.remove('dark');
+        }
 
-export function useDarkMode() {
-    return { darkMode }
+        localStorage.setItem('theme', theme);
+    };
+
+    const initTheme = () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        themeRef.value = savedTheme;
+        applyTheme(savedTheme);
+    };
+
+    watch(themeRef, (newVal) => {
+        applyTheme(newVal);
+    });
+
+    return { initTheme };
 }

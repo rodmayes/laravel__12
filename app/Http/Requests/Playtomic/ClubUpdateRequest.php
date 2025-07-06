@@ -24,12 +24,7 @@ class ClubUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'playtomic_id' => [
-                'required',
-                'string',
-                'max:150',
-                Rule::unique('playtomic_club', 'playtomic_id')->ignore($this->route('resource')),
-            ],
+            'playtomic_id' => ['nullable', 'string', 'max:150', Rule::unique('playtomic_club', 'playtomic_id')->ignore($this->route('club'))],
             'days_min_booking' => 'required|integer|min:1',
             'timetable_summer' =>  'required|boolean',
             'booking_hour' =>  'required|date_format:H:i:s',

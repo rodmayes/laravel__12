@@ -21,7 +21,7 @@ const form = useForm({
 });
 
 const update = () => {
-    form.put(route("playtomic.clubs.update", props.club?.id), {
+    form.put(route("playtomic.club.update", props.club?.id), {
         preserveScroll: true,
         onSuccess: () => {
             emit("close");

@@ -6,7 +6,6 @@ import AppFooter from './AppFooter.vue';
 import AppSidebar from './AppSidebar.vue';
 import AppTopbar from './AppTopbar.vue';
 import FlashToaster from '@/Components/FlashToaster.vue';
-import { useDarkMode } from '@/composables/useDarkMode'
 
 const toastRef = ref();
 
@@ -19,8 +18,6 @@ onMounted(() => {
     if (inst && toastRef.value) {
         inst._registerInstance(toastRef.value);
     }
-
-    const { darkMode } = useDarkMode()
 
     window.addEventListener('inertia:finish', () => {
         if (localStorage.getItem('theme') === 'dark') {

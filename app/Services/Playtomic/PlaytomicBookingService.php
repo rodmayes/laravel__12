@@ -35,7 +35,9 @@ class PlaytomicBookingService
 
     public function processSingleBooking(Booking $booking, bool $runNow = false): void
     {
+        Log::debug("[Start] Booking process for single booking");
         $executionDate = $booking->executionDate;
+        Log::debug('Execution date: '.$executionDate);
         $executionDate1MinutBefore = $executionDate->copy()->subMinute();
 
         // Crear el job con UUID manual
@@ -89,6 +91,7 @@ class PlaytomicBookingService
                     default => $executionDate->copy()->addSeconds(2),
                 };
 
+                Log::debug('LaunchProbookingJob '.$booking->name, $booking->toArray());
                 $job = new LaunchPrebookingJob(
                     $this->userPlaytomic->id,
                     $booking->id,

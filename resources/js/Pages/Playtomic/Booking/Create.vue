@@ -4,9 +4,7 @@ import { useForm } from '@inertiajs/vue3';
 import { ref, watch  } from "vue";
 import axios from 'axios';
 
-import { loadToast } from '@/composables/loadToast';
 import { formatDateForInput, formatDateLocal} from "@/composables/useFormatters.js";
-loadToast();
 
 const props = defineProps({
     clubs: Object,
@@ -79,8 +77,6 @@ const breadcrum = ref([
                             :modelValue="form.started_at"
                             inline
                             dateFormat="yy-mm-dd"
-                            :touchUI="false"
-                            :showIcon="false"
                             class="w-full"
                             :style="{ minWidth: '18rem' }"
                         />

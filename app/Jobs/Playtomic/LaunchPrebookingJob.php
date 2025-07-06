@@ -9,6 +9,7 @@ use App\Models\ScheduledJob;
 use App\Models\Timetable;
 use App\Models\User;
 use App\Services\Playtomic\PlaytomicHttpService;
+use App\Trait\UpdateScheduledJobTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,6 +23,7 @@ use romanzipp\QueueMonitor\Traits\IsMonitored;
 class LaunchPrebookingJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
+    use UpdateScheduledJobTrait;
 
     public int $userId;
     public int $bookingId;
@@ -83,14 +85,10 @@ class LaunchPrebookingJob implements ShouldQueue
                 $this->appendLog($booking, 'Booking failed: ' . $bookingResult['error']);
             }
 
-            // ✅ Marcar como ejecutado
-            if ($scheduled) {
-                $scheduled->executed_at = now();
-                $scheduled->save();
-            }
-
+            $this->setScheduledJobStatus($this->uuid, 'success');
         } catch (\Throwable $e) {
             $this->appendLog($booking, 'Job error: ' . $e->getMessage());
+            $this->setScheduledJobStatus($this->uuid, 'error');
         }
     }
 

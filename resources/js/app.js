@@ -10,7 +10,7 @@ import Aura from '@primevue/themes/aura';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
-import Toast from 'primevue/toast';;
+import Toast from 'primevue/toast';
 import toastPlugin from './composables/toastPlugin'
 
 import '@/sakai/assets/styles.scss';

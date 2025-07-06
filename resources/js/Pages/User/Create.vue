@@ -15,7 +15,7 @@ const form = useForm({
     email: "",
     password: "",
     password_confirmation: "",
-    roles: "",
+    roles: [],
 });
 
 const create = () => {
@@ -64,7 +64,7 @@ watchEffect(() => {
                 </div>
                 <div class="flex flex-col gap-2">
                     <label for="role">Roles</label>
-                    <MultiSelect v-model="form.roles" :options="props.roles" optionValue="code" optionLabel="name" placeholder="Select" />
+                    <MultiSelect v-model="form.roles" :options="props.roles" optionValue="id" optionLabel="name" placeholder="Select" />
                     <small v-if="form.errors.roles" class="text-red-500">{{ form.errors.roles }}</small>
 
                 </div>

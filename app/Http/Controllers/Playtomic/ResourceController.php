@@ -26,7 +26,7 @@ class ResourceController extends Controller
         ]);
     }
 
-    public function refresData(Request $request)
+    public function refreshData(Request $request)
     {
         return response()->json([
             'items' => $this->getData($request),

@@ -22,11 +22,11 @@ class TimetableController extends Controller
         return Inertia::render('Playtomic/TimeTable/Index', [
             'title'         => 'Timestables',
             'filters'       => $request->all(['search', 'field', 'order']),
-            'items'         => $this->getData($request)
+            //'items'         => $this->getData($request)
         ]);
     }
 
-    public function refresData(Request $request)
+    public function refreshData(Request $request)
     {
         return response()->json([
             'items' => $this->getData($request),
@@ -48,15 +48,19 @@ class TimetableController extends Controller
         }
         // Ordenación múltiple
         if ($request->filled('sort')) {
-            $sortArray = json_decode($request->sort, true);
+            $sortArray = $request->sort;//json_decode($request->sort, true);
             if (is_array($sortArray)) {
                 foreach ($sortArray as $sort) {
-                    if (isset($sort['field'], $sort['order']) &&
+                    if (isset($sort['field']) &&
                         in_array($sort['field'], ['id', 'name', 'playtomic_id','playtomic_id_summer'])) {
-                        $items->orderBy($sort['field'], $sort['order']);
+                        $items->orderBy($sort['field'], $sort['order'] ?? 'asc');
                     }
                 }
+            }else{
+                $items->orderBy('name');
             }
+        }else{
+            $items->orderBy('name');
         }
 
         return $items;

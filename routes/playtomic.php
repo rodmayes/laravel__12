@@ -30,7 +30,7 @@ use App\Http\Controllers\Playtomic\TimetableController;
 Route::prefix('club')->name('club.')->group(function () {
     Route::get('', [ClubController::class, 'index'])->name('index');
     Route::post('getData', [ClubController::class, 'getData'])->name('getData');
-    Route::post('refreshData', [ClubController::class, 'refresData'])->name('refreshData');
+    Route::post('refreshData', [ClubController::class, 'refreshData'])->name('refreshData');
     Route::put('{club}', [ClubController::class, 'update'])->name('update');
     Route::post('', [ClubController::class, 'store'])->name('store');
     Route::get('availability/{club}',[ClubController::class, 'availability'])->name('availability');
@@ -43,7 +43,7 @@ Route::prefix('club')->name('club.')->group(function () {
 Route::prefix('timetables')->name('timetables.')->group(function () {
     Route::get('', [TimetableController::class, 'index'])->name('index');
     Route::post('getData', [TimetableController::class, 'getData'])->name('getData');
-    Route::post('refreshData', [TimetableController::class, 'refresData'])->name('refreshData');
+    Route::post('refreshData', [TimetableController::class, 'refreshData'])->name('refreshData');
     Route::put('{timetable}', [TimetableController::class, 'update'])->name('update');
     Route::post('', [TimetableController::class, 'store'])->name('store');
     Route::get('get-list',[TimetableController::class, 'getList'])->name('get-list');
@@ -54,7 +54,7 @@ Route::prefix('timetables')->name('timetables.')->group(function () {
 Route::prefix('resources')->name('resources.')->group(function () {
     Route::get('', [ResourceController::class, 'index'])->name('index');
     Route::post('filter', [ResourceController::class, 'filter'])->name('filter');
-    Route::post('refreshData', [ResourceController::class, 'refresData'])->name('refreshData');
+    Route::post('refreshData', [ResourceController::class, 'refreshData'])->name('refreshData');
     Route::put('{resource}', [ResourceController::class, 'update'])->name('update');
     Route::post('', [ResourceController::class, 'store'])->name('store');
     Route::get('get-list',[ResourceController::class, 'getList'])->name('get-list');
@@ -67,7 +67,7 @@ Route::prefix('bookings')->name('bookings.')->group(function () {
     Route::post('getData', [BookingController::class, 'getData'])->name('getData');
     Route::get('create', [BookingController::class, 'create'])->name('create');
     Route::get('edit/{booking}', [BookingController::class, 'edit'])->name('edit');
-    Route::post('refreshData', [BookingController::class, 'refresData'])->name('refreshData');
+    Route::post('refreshData', [BookingController::class, 'refreshData'])->name('refreshData');
     Route::put('{booking}', [BookingController::class, 'update'])->name('update');
     Route::post('', [BookingController::class, 'store'])->name('store');
     Route::get('get-list',[BookingController::class, 'getList'])->name('get-list');

@@ -14,7 +14,6 @@ import axios from "axios";
 const props = defineProps({
   title: String,
   filters: Object,
-  items: Object,
   perPage: Number,
 });
 
@@ -22,7 +21,7 @@ loadToast();
 
 const deleteDialog = ref(false);
 const form = useForm({});
-const itemsRef = reactive({ ...props.items });
+const itemsRef = reactive([]);
 
 const data = reactive({
   params: {
@@ -30,6 +29,8 @@ const data = reactive({
     field: props.filters.field,
     order: props.filters.order,
     perPage: props.perPage ?? 20,
+    page: 1,
+    sort: [{'field': 'name', 'order': 'asc'}],
   },
   createOpen: false,
   editOpen: false,
@@ -65,11 +66,12 @@ const onPageChange = (event) => {
 };
 
 const onSortChange = (event) => {
-  const sortFields = event.multiSortMeta?.map(sort => ({
-    field: sort.field,
-    order: sort.order === 1 ? 'asc' : 'desc'
+  const sortFields = event.multiSortMeta?.map(
+      sort => ({
+        field: sort.field,
+        order: sort.order === 1 ? 'asc' : 'desc'
   }));
-  data.params.sort = JSON.stringify(sortFields);
+  data.params.sort = sortFields; //JSON.stringify(sortFields);
   fetchData();
 };
 
@@ -106,8 +108,6 @@ const breadcrum = ref([
         :first="(itemsRef.current_page - 1) * itemsRef.per_page"
         :rowsPerPageOptions="[5, 10, 20, 50]"
         sortMode="multiple"
-        :sortField="'name'"
-        :sortOrder="-1"
         @page="onPageChange"
         @sort="onSortChange"
         tableStyle="min-width: 50rem"

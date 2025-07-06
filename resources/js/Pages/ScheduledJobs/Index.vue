@@ -12,13 +12,12 @@ loadToast();
 const props = defineProps({
     title: String,
     filters: Object,
-    items: Object,
     perPage: Number
 });
 
 const deleteDialog = ref(false);
 const form = useForm({});
-const itemsRef = reactive({ ...props.items });
+const itemsRef = reactive([]);
 
 const data = reactive({
     params: {
@@ -28,6 +27,7 @@ const data = reactive({
         perPage: props.perPage ?? 10,
         page: 1,
         status: null,
+        sort: [{'field': 'schedulable.name', 'order': 'asc'}],
     },
     editOpen: false,
     showOpen: false,
@@ -72,8 +72,25 @@ const onSortChange = (event) => {
         field: s.field,
         order: s.order === 1 ? "asc" : "desc",
     }));
-    data.params.sort = JSON.stringify(sortFields);
+    data.params.sort = sortFields;
     fetchData();
+};
+
+const getSeverity = (status) => {
+    switch (status) {
+        case 'failed':
+            return 'danger';
+
+        case 'executed':
+            return 'success';
+
+        case 'pending':
+            return 'info';
+
+        case 'cancelled':
+            return 'warn';
+
+    }
 };
 
 const breadcrum = ref([
@@ -89,13 +106,7 @@ onMounted(() => {
 <template>
     <AppLayout :items="breadcrum">
         <div class="card">
-            <Menubar class="mb-4">
-                <template #start>
-                </template>
-            </Menubar>
-
             <Edit :show="data.editOpen" @close="data.editOpen = false" :job="data.job" :title="props.title" />
-
             <ConfirmDialog />
 
             <DataTable
@@ -113,6 +124,7 @@ onMounted(() => {
                 @sort="onSortChange"
                 tableStyle="min-width: 50rem"
                 size="small"
+                rowGroupMode="subheader" groupRowsBy="schedulable.name"
             >
                 <template #header>
                     <div class="flex flex-wrap gap-2 items-center justify-between">
@@ -132,20 +144,17 @@ onMounted(() => {
                 <template #loading> Loading data. Please wait. </template>
 
                 <Column field="id" header="ID" sortable />
-                <Column field="schedulable_id" header="Model Id" sortable>
-                    <template #body="{ data: job }">
-                        <Link :href="route('playtomic.bookings.edit', job.schedulable_id)">
-                            {{ job.schedulable.name }}
-                        </Link>
-                    </template>
-                </Column>
                 <Column field="scheduled_for" header="Scheduled">
                     <template #body="{ data: job }">
                         {{ formatDate(job.scheduled_for) }}
                     </template>
                 </Column>
                 <Column field="job_id" header="Job ID" sortable />
-                <Column field="status" header="Status" />
+                <Column field="status" header="Status">
+                    <template #body="{data}">
+                        <Tag :value="data.status" :severity="getSeverity(data.status)" />
+                    </template>
+                </Column>
                 <Column field="payload" header="Payload" />
                 <Column field="executed_at" header="Executed">
                     <template #body="{ data: job }">
@@ -164,6 +173,13 @@ onMounted(() => {
                         <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDelete(job)" />
                     </template>
                 </Column>
+                <template #groupheader="{data}">
+                    <div class="flex items-center gap-2">
+                        <Link :href="route('playtomic.bookings.edit', data.schedulable_id)" class="text-blue-600 dark:text-blue-300">
+                            {{ data.schedulable.name }} - {{ formatDate(data.scheduled_for) }}
+                        </Link>
+                    </div>
+                </template>
             </DataTable>
 
             <Dialog v-model:visible="deleteDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">

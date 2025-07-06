@@ -37,7 +37,6 @@ class BookingController extends Controller
         return Inertia::render('Playtomic/Booking/Index', [
             'title'         => 'Bookings',
             'filters'       => $request->all(['search', 'field', 'order']),
-            'items'         => $this->getData($request),
             'clubs'           => $clubs,
             'players'         => $players,
             'timetables'       => $timetables,
@@ -45,7 +44,7 @@ class BookingController extends Controller
         ]);
     }
 
-    public function refresData(Request $request)
+    public function refreshData(Request $request)
     {
         return response()->json([
             'items' => $this->getData($request),
@@ -107,15 +106,19 @@ class BookingController extends Controller
 
         // Ordenación múltiple
         if ($request->filled('sort')) {
-            $sortArray = json_decode($request->sort, true);
+            $sortArray = $request->sort;
             if (is_array($sortArray)) {
                 foreach ($sortArray as $sort) {
-                    if (isset($sort['field'], $sort['order']) &&
-                        in_array($sort['field'], ['id', 'name', 'playtomic_id','booking_preference','club.name', 'starter_at', 'timetable.name','status','player.name', 'booked'])) {
-                        $items->orderBy($sort['field'], $sort['order']);
+                    if (isset($sort['field']) &&
+                        in_array($sort['field'], ['id', 'name', 'playtomic_id','booking_preference','club.name', 'started_at', 'timetable.name','status','player.name', 'booked'])) {
+                        $items->orderBy($sort['field'], $sort['order'] ?? 'asc');
                     }
                 }
+            }else{
+                $items->orderBy('started_at', 'desc');
             }
+        }else{
+            $items->orderBy('started_at', 'desc');
         }
 
         return $items;

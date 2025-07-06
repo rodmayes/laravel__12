@@ -1,3 +1,5 @@
+import {isValid, parseISO, subDays} from "date-fns";
+
 export const formatDate = (str) => {
     if (!str) return "";
     return new Date(str).toLocaleDateString("es-ES");
@@ -12,11 +14,20 @@ export const formatDateForInput = (date) => {
 
 // useFormatters.js
 export const formatDateLocal = (date) => {
-    if (!date) return "";
-
+    if (!date || isNaN(date.getTime?.())) return "";
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+};
 
-    return `${year}-${month}-${day}`; // Ej: "2025-06-28"
+export const getModifiedDate = (item) => {
+    if (!item?.started_at || !item?.club?.days_min_booking) return null;
+
+    const date = parseISO(item.started_at);
+    const days = Number(item.club.days_min_booking);
+
+    if (!isValid(date) || isNaN(days)) return null;
+
+    return subDays(date, days);
 };

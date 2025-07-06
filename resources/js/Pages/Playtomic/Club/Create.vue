@@ -20,7 +20,7 @@ const form = useForm({
 });
 
 const create = () => {
-    form.post(route("playtomic.clubs.store"), {
+    form.post(route("playtomic.club.store"), {
         preserveScroll: true,
         onSuccess: () => {
             emit("close");
