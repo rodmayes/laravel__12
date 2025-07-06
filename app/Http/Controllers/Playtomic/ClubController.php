@@ -12,6 +12,7 @@ use App\Services\Playtomic\PlaytomicHttpService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -133,6 +134,7 @@ class ClubController extends Controller
 
     public function syncResources(Club $club){
         try {
+            Log::debug(auth()->user()->id);
             $service = (new PlaytomicHttpService(auth()->user()->id));
             $service->login();
             $information_club = $service->getInformationClub($club);

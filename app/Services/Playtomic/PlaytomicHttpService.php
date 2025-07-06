@@ -64,7 +64,13 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
     }
 
     public function getInformationClub(Club $club){
-        return $this->sendGet('v1/tenants/'. $club->playtomic_id);
+        try{
+            $response = $this->sendGet('v1/tenants/'. $club->playtomic_id);
+            return $response->getBody()->getContents();
+        }catch(\Exception $e){
+            Log::error('Get information club '.$e->getMessage());
+            return ['status' => 'fail', 'message' => $e->getMessage()];
+        }
     }
 
     public function getAvailabilityClub($information_club){
