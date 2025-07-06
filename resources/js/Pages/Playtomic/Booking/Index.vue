@@ -78,8 +78,10 @@ const onSortChange = (event) => {
     fetchData();
 };
 
-const deleteData = (booking) => {
-    router.delete(route('playtomic.bookings.destroy', booking.id), {
+const deleteData = () => {
+    deleteDialog.value = false;
+
+    router.delete(route('playtomic.bookings.destroy', data.booking.id), {
         onSuccess: () => {
             deleteDialog.value = false;
             fetchData();
@@ -147,8 +149,22 @@ onMounted(fetchData);
                           :deleteData="deleteData"
                           :router="router"
                           :can="can"
-                          @confirm-delete="deleteData"
+                          @confirm-delete="(item) => {deleteDialog = true; data.booking = item; }"
             />
         </div>
+
+        <Dialog v-model:visible="deleteDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+            <div class="flex items-center gap-4">
+                <i class="pi pi-exclamation-triangle !text-3xl" />
+                <span v-if="data.booking"
+                >Are you sure you want to delete <b>{{ data.booking.name }}</b
+                >?</span
+                >
+            </div>
+            <template #footer>
+                <Button label="No" icon="pi pi-times" text @click="deleteDialog = false" />
+                <Button label="Yes" icon="pi pi-check" @click="deleteData" />
+            </template>
+        </Dialog>
     </AppLayout>
 </template>
