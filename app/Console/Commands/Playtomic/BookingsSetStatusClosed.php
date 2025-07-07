@@ -47,14 +47,14 @@ class BookingsSetStatusClosed extends Command
             if($day_to_date->startOfDay() < Carbon::now('Europe/Andorra')->startOfDay()){
                 try{
                     $booking->setStatusTimeOut();
-                    $this->line('Status Time out: '.$booking->name.' '.$booking->started_at->format('d-m-Y'));
+                    $this->line('Status Time out: '.$booking->name.' '.Carbon::parse($booking->started_at)->format('d-m-Y'));
                 }catch(\Exception $e){
                     Log::error($e->getMessage());
                 }
             }else{
                 try{
                     $booking->setStatusOnTime();
-                    $this->line('Status On time: '.$booking->name.' '.$booking->started_at->format('d-m-Y'));
+                    $this->line('Status On time: '.$booking->name.' '.Carbon::parse($booking->started_at)->format('d-m-Y'));
                 }catch(\Exception $e){
                     Log::error($e->getMessage());
                 }
