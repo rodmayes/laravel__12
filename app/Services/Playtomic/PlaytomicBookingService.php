@@ -41,8 +41,7 @@ class PlaytomicBookingService
         $executionDate1MinutBefore = $executionDate->copy()->subMinute();
 
         // Crear el job con UUID manual
-        $loginJob = new UserLoginJob($this->userPlaytomic->id);
-        $loginJob->uuid = (string) Str::uuid();
+        $loginJob = new UserLoginJob($this->userPlaytomic->id, (string) Str::uuid());
 
         $runNow
             ? dispatch($loginJob)
@@ -96,9 +95,9 @@ class PlaytomicBookingService
                     $this->userPlaytomic->id,
                     $booking->id,
                     $resource->id,
-                    $timetable->id
+                    $timetable->id,
+                    (string) Str::uuid()
                 );
-                $job->uuid = (string) Str::uuid();
 
                 $runNow
                     ? dispatch($job)

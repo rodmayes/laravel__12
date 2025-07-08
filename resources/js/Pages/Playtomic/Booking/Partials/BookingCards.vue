@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import {computed, reactive, ref} from 'vue';
 import {isToday, isPast, parseISO} from "date-fns";
 import {formatDate, formatDateLocal} from "@/composables/useFormatters.js";
 
@@ -14,8 +14,21 @@ const props = defineProps({
     router: Object,
     can: Function,
 });
+
+const showLogsDialog = ref(false);
+
+const data = reactive({
+    booking: null,
+    logs: []
+});
+
 const emit = defineEmits(['confirmDelete']);
 const cards = computed(() => props.items.data ?? []);
+
+const showLogs = (item) => {
+    data.logs = item && item.log ? JSON.parse(item.log) : [];
+    showLogsDialog.value = true;
+};
 </script>
 
 <template>
@@ -54,6 +67,9 @@ const cards = computed(() => props.items.data ?? []);
                     <Button icon="pi pi-pencil" outlined rounded
                             @click="$inertia.visit(route('playtomic.bookings.edit', item.id))"
                             v-if="can(['playtomic.booking_edit'])" />
+                    <Button icon="pi pi-comments" severity="info" outlined rounded
+                            @click="showLogs(item)"
+                            />
                     <Button icon="pi pi-trash" severity="danger" outlined rounded
                             @click="emit('confirmDelete', item)"
                             v-if="can(['playtomic.booking_delete'])" />
@@ -64,5 +80,18 @@ const cards = computed(() => props.items.data ?? []);
                    :first="(items.current_page - 1) * items.per_page"
                    @page="props.onPageChange"
                    :rowsPerPageOptions="[5, 10, 20, 50]" class="mt-4" />
+
+        <Dialog v-model:visible="showLogsDialog" :style="{ width: '50rem' }" header="Logs" :modal="true" maximizable >
+            <div class="grid grid-cols-1 gap-4">
+                <p v-for="log in data.logs">
+                    <small>
+                        <i class="fas fa-dot-circle"></i> {{log}}
+                    </small>
+                </p>
+            </div>
+            <template #footer>
+                <Button label="Close" icon="pi pi-times" text @click="showLogsDialog = false" />
+            </template>
+        </Dialog>
     </div>
 </template>

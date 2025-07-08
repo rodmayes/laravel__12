@@ -86,10 +86,10 @@ class LaunchPrebookingJob implements ShouldQueue
                 $this->appendLog($booking, 'Booking failed: ' . $bookingResult['error']);
             }
 
-            $this->setScheduledJobStatus($this->uuid, 'success');
+            $this->setScheduledJobStatus($this->uuid, 'success', 'Booked');
         } catch (\Throwable $e) {
             $this->appendLog($booking, 'Job error: ' . $e->getMessage());
-            $this->setScheduledJobStatus($this->uuid, 'failed');
+            $this->setScheduledJobStatus($this->uuid, 'failed', 'Job error: ' . $e->getMessage());
         }
     }
 

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->uuid('job_id')->index(); // Laravel 12 usa UUIDs para los jobs por defecto
             $table->string('job_type',255);
             $table->json('payload')->nullable(); // datos adicionales del job
-            $table->enum('status', ['pending', 'running', 'completed', 'failed', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'running', 'completed', 'failed', 'cancelled', 'success', 'error'])->default('pending');
+            $table->longText('output')->nullable();
             $table->timestamp('scheduled_for')->nullable();
             $table->timestamp('executed_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();

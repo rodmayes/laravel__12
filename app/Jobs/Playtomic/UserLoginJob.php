@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 class UserLoginJob implements ShouldQueue
@@ -21,9 +22,10 @@ class UserLoginJob implements ShouldQueue
     public string $uuid;
     protected int $userId;
 
-    public function __construct(int $userId)
+    public function __construct(int $userId, ?string $uuid = null)
     {
         $this->userId = $userId;
+        $this->uuid = $uuid ?? (string) Str::uuid();
     }
 
     public function handle(){
@@ -38,10 +40,10 @@ class UserLoginJob implements ShouldQueue
                 Log::debug('NOT Logged');
             }
             Log::info('Logged '.$user->email);
-            $this->setScheduledJobStatus($this->uuid, 'success');
+            $this->setScheduledJobStatus($this->uuid, 'success', 'Logged '.$user->email);
         }catch (\Exception $e){
             Log::error('Login: '.$e->getMessage());
-            $this->setScheduledJobStatus($this->uuid, 'error');
+            $this->setScheduledJobStatus($this->uuid, 'error', 'Error Login: '.$e->getMessage());
         }
     }
 }
