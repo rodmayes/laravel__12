@@ -10,6 +10,7 @@ use App\Models\Timetable;
 use App\Models\User;
 use App\Services\Playtomic\PlaytomicHttpService;
 use App\Trait\UpdateScheduledJobTrait;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -132,7 +133,7 @@ class LaunchPrebookingJob implements ShouldQueue
 
         if ($booking) {
             $logArray = json_decode($booking->log ?? '[]', true);
-            $logArray[] = now()->format('Y-m-d H:i:s') . ' - ' . $message;
+            $logArray[] = Carbon::now()->format('Y-m-d H:i:s') . ' - ' . $message;
             $booking->log = json_encode($logArray);
             $booking->save();
         }

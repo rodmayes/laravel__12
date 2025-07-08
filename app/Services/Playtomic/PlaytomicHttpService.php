@@ -8,6 +8,7 @@ use App\Models\Resource;
 use App\Models\Timetable;
 use App\Models\User;
 use App\Services\ApiHttpServiceRequest;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Crypt;
@@ -75,7 +76,7 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
 
     public function getAvailabilityClub($information_club){
         $params = '';
-        $today = now()->format('Y-m-d H:i:s');
+        $today = Carbon::now()->format('Y-m-d H:i:s');
         $data = [
             'user_id' => 'me',
             'tenant_id' => $information_club['tenant_id'],
@@ -118,7 +119,7 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
 
         try {
             $name = $booking->club->name . ' ' . $resource->name.' '.$booking->started_at->format('d-m-Y') . ' ' . $timetable->name;
-            Log::info('Preboooking api at '.now()->format('d-m-Y H:i:s').' '.$name);
+            Log::info('Preboooking api at '.Carbon::now()->format('d-m-Y H:i:s').' '.$name);
             $response = $this->sendPost($data, 'v1/payment_intents');
             return $this->response($response);
         }catch(\Exception $e){
