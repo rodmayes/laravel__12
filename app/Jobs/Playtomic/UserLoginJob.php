@@ -19,13 +19,11 @@ class UserLoginJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
     use UpdateScheduledJobTrait;
 
-    public string $uuid;
     protected int $userId;
 
-    public function __construct(int $userId, ?string $uuid = null)
+    public function __construct(int $userId)
     {
         $this->userId = $userId;
-        $this->uuid = $uuid ?? (string) Str::uuid();
     }
 
     public function handle(){
@@ -40,10 +38,10 @@ class UserLoginJob implements ShouldQueue
                 Log::debug('NOT Logged');
             }
             Log::info('Logged '.$user->email);
-            $this->setScheduledJobStatus($this->uuid, 'success', 'Logged '.$user->email);
+            //$this->setScheduledJobStatus($this->uuid, 'success', 'Logged '.$user->email);
         }catch (\Exception $e){
             Log::error('Login: '.$e->getMessage());
-            $this->setScheduledJobStatus($this->uuid, 'error', 'Error Login: '.$e->getMessage());
+            //$this->setScheduledJobStatus($this->uuid, 'error', 'Error Login: '.$e->getMessage());
         }
     }
 }

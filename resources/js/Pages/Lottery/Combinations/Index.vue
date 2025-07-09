@@ -37,6 +37,17 @@ const makeMagikNumbers = () => {
     });
 };
 
+const interval = setInterval(async () => {
+    const res = await axios.get(`/job/status/${uuid}`);
+    if (res.data.status === 'finished') {
+        status.value = 'Finalizado';
+        clearInterval(interval);
+    } else if (res.data.status === 'failed') {
+        status.value = 'Ha fallado';
+        clearInterval(interval);
+    }
+}, 3000);
+
 const onSendMail = () => {
     data.sendMail = false;
     axios.post(route('lottery.combinations.send-mail-with-combinations'), {combinations: data.combinations})

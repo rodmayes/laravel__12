@@ -40,23 +40,28 @@ class PlaytomicBookingService
         Log::debug('Execution date: '.$executionDate);
         $executionDate1MinutBefore = $executionDate->copy()->subMinute();
 
-        // Crear el job con UUID manual
-        $loginJob = new UserLoginJob($this->userPlaytomic->id, (string) Str::uuid());
+        // Crear el job (sin UUID manual)
+        $loginJob = new UserLoginJob($this->userPlaytomic->id);
 
+        // Dispatch y captura del job encolado (con UUID de Laravel)
         $runNow
             ? dispatch($loginJob)
             : dispatch($loginJob->delay($executionDate1MinutBefore));
 
+        Log::debug('Dispatched');
+        // Guardar el ScheduledJob usando el UUID real
         $booking->scheduledJobs()->create([
-            'job_id'         => $loginJob->uuid,
+            'job_id'         => (string) Str::uuid(),
             'job_type'       => get_class($loginJob),
             'scheduled_for'  => $executionDate1MinutBefore,
             'payload'        => ['user_id' => $this->userPlaytomic->id, 'action' => 'login'],
             'status'         => 'pending'
         ]);
+        Log::debug('ScheduledJobs created ');
 
         $this->enqueuePrebookingJobs($booking, $executionDate, $runNow);
     }
+
 
     protected function enqueuePrebookingJobs(Booking $booking, $executionDate, $runNow): void
     {
@@ -90,27 +95,26 @@ class PlaytomicBookingService
                     default => $executionDate->copy()->addSeconds(2),
                 };
 
-                Log::debug('LaunchProbookingJob '.$booking->name, $booking->toArray());
                 $job = new LaunchPrebookingJob(
                     $this->userPlaytomic->id,
                     $booking->id,
                     $resource->id,
-                    $timetable->id,
-                    (string) Str::uuid()
+                    $timetable->id
                 );
 
+                // Dispatch y capturar job con UUID real
                 $runNow
                     ? dispatch($job)
                     : dispatch($job->delay($jobTime));
 
                 $booking->scheduledJobs()->create([
-                    'job_id'        => $job->uuid,
+                    'job_id'        => (string) Str::uuid(),
                     'job_type'      => get_class($job),
                     'scheduled_for' => $jobTime,
                     'payload'       => [
-                        'resource_id' => $resource->id,
+                        'resource_id'  => $resource->id,
                         'timetable_id' => $timetable->id,
-                        'action'      => 'prebooking'
+                        'action'       => 'prebooking'
                     ],
                     'status'         => 'pending'
                 ]);

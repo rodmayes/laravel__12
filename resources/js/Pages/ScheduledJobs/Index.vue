@@ -5,7 +5,7 @@ import { useForm, Link } from "@inertiajs/vue3";
 import { reactive, ref, getCurrentInstance, onMounted } from "vue";
 import axios from "axios";
 import pickBy from "lodash/pickBy";
-import { formatDate } from '@/composables/useFormatters';
+import {formatDate, formatDateTime} from '@/composables/useFormatters';
 import { loadToast } from '@/composables/loadToast';
 loadToast();
 
@@ -27,7 +27,7 @@ const data = reactive({
         perPage: props.perPage ?? 10,
         page: 1,
         status: null,
-        sort: [{'field': 'schedulable.name', 'order': 'asc'}],
+        sort: [{'field': 'scheduled_for', 'order': 'desc'}],
     },
     editOpen: false,
     showOpen: false,
@@ -118,7 +118,7 @@ onMounted(() => {
                 :first="(itemsRef.current_page - 1) * itemsRef.per_page"
                 :rowsPerPageOptions="[5, 10, 20, 50]"
                 sortMode="multiple"
-                :sortField="'id'"
+                sortField="scheduled_for"
                 :sortOrder="-1"
                 @page="onPageChange"
                 @sort="onSortChange"
@@ -144,9 +144,9 @@ onMounted(() => {
                 <template #loading> Loading data. Please wait. </template>
 
                 <Column field="id" header="ID" sortable />
-                <Column field="scheduled_for" header="Scheduled">
+                <Column field="scheduled_for" header="Scheduled" sortable>
                     <template #body="{ data: job }">
-                        {{ formatDate(job.scheduled_for) }}
+                        {{ formatDateTime(job.scheduled_for) }}
                     </template>
                 </Column>
                 <Column field="job_id" header="Job ID" sortable />
@@ -158,7 +158,7 @@ onMounted(() => {
                 <Column field="payload" header="Payload" />
                 <Column field="executed_at" header="Executed">
                     <template #body="{ data: job }">
-                        {{ formatDate(job.executed_at) }}
+                        {{ formatDateTime(job.executed_at) }}
                     </template>
                 </Column>
                 <Column field="cancelled_at" header="Cancelled">

@@ -67,6 +67,7 @@ class LaunchPrebookingJob implements ShouldQueue
 
         try {
             $response = $this->service->preBooking($booking, $resource, $timetable);
+            $this->appendLog($booking, 'Response prebooking');
             Log::debug('Response prebooking', ['response' => $response]);
 
             if (!$response || (isset($response['status']) && $response['status'] === 'fail')) {
@@ -86,10 +87,10 @@ class LaunchPrebookingJob implements ShouldQueue
                 $this->appendLog($booking, 'Booking failed: ' . $bookingResult['error']);
             }
 
-            $this->setScheduledJobStatus($this->uuid, 'success', 'Booked');
+            //$this->setScheduledJobStatus($this->uuid, 'success', 'Booked');
         } catch (\Throwable $e) {
             $this->appendLog($booking, 'Job error: ' . $e->getMessage());
-            $this->setScheduledJobStatus($this->uuid, 'failed', 'Job error: ' . $e->getMessage());
+            //$this->setScheduledJobStatus($this->uuid, 'failed', 'Job error: ' . $e->getMessage());
         }
     }
 
@@ -129,7 +130,7 @@ class LaunchPrebookingJob implements ShouldQueue
 
     protected function appendLog(?Booking $booking, string $message): void
     {
-        Log::info($message);
+        Log::debug($message, $booking ? $booking->toArray() : []);
 
         if ($booking) {
             $logArray = json_decode($booking->log ?? '[]', true);

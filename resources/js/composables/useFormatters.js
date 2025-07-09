@@ -5,6 +5,18 @@ export const formatDate = (str) => {
     return new Date(str).toLocaleDateString("es-ES");
 };
 
+export const formatDateTime = (str) => {
+    if (!str) return "";
+    const date = new Date(str);
+    return date.toLocaleString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+};
+
 // Devuelve una fecha en formato 'YYYY-MM-DD' para campos tipo input/date
 export const formatDateForInput = (date) => {
     if (!date) return "";

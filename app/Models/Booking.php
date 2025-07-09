@@ -73,12 +73,9 @@ class Booking extends Model
         'duration'
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'started_at',
-        'booked_at'
+    protected $casts = [
+        'started_at' => 'datetime',
+        'booked_at'  => 'datetime',
     ];
 
     protected $fillable = [
@@ -209,7 +206,8 @@ class Booking extends Model
 
     public function getExecutionDateAttribute(){
         $timezone = env('APP_DATETIME_ZONE', 'Europe/Andorra');
-        $executionDate = $this->started_at
+        $started_at = Carbon::parse($this->attributes['started_at']);
+        $executionDate = $started_at
             ->copy()
             ->setTimezone($timezone)
             ->subDays((int) $this->club->days_min_booking)

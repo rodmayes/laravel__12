@@ -4,60 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="77c33c65-7943-4dea-b646-bb8283f2b689" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ScheduledJobCommandController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/ScheduledJobCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Services/KernelService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Services/TelegramService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/assets/img/letter_r.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Partials/BookingCards.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Partials/BookingTable.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/Pages/ScheduledJobCommand/DialogForm.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/Pages/ScheduledJobCommand/Index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/Pages/Welcome-old.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/images.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+    <list default="true" id="77c33c65-7943-4dea-b646-bb8283f2b689" name="Changes" comment="Initial commit">
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/JobController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Console/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthenticatedSessionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthenticatedSessionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/BookingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/BookingController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/ClubController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/ClubController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/ResourceController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/ResourceController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/TimetableController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/TimetableController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ScheduledJobController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ScheduledJobController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/Playtomic/ClubUpdateRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/Playtomic/ClubUpdateRequest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Jobs/Playtomic/LaunchPrebookingJob.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Jobs/Playtomic/LaunchPrebookingJob.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Jobs/Playtomic/UserLoginJob.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Jobs/Playtomic/UserLoginJob.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/ScheduledJob.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/ScheduledJob.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Services/Playtomic/PlaytomicBookingService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Services/Playtomic/PlaytomicBookingService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/services.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Auth/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Create.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Create.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Edit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Club/Create.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Club/Create.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Club/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Club/Edit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/TimeTable/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/TimeTable/Index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/ScheduledJobs/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/ScheduledJobs/Index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/User/Create.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/User/Create.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/User/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/User/Index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Welcome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Welcome.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/composables/useDarkMode.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/composables/useDarkMode.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/composables/useFormatters.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/composables/useFormatters.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/sakai/layout/AppLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/sakai/layout/AppLayout.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/sakai/layout/AppMenu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/sakai/layout/AppMenu.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/sakai/layout/AppMenuItem.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/sakai/layout/AppMenuItem.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/sakai/layout/AppTopbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/sakai/layout/AppTopbar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/sakai/layout/composables/layout.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/sakai/layout/composables/layout.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/app.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/auth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/playtomic.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/playtomic.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Lottery/LotteryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Lottery/LotteryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Jobs/getLotteryNumbersJob.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Jobs/getLotteryNumbersJob.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Services/LotteryService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Services/LotteryService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Lottery/Combinations/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Lottery/Combinations/Index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Partials/BookingCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Partials/BookingCards.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -240,6 +194,9 @@
       <path value="$PROJECT_DIR$/vendor/arcanedev/support" />
     </include_path>
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 2
@@ -309,7 +266,25 @@
       <workItem from="1751383109412" duration="3095000" />
       <workItem from="1751559101460" duration="603000" />
       <workItem from="1751791666912" duration="2800000" />
+      <workItem from="1751795919405" duration="26922000" />
     </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1751796249416</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1751796249416</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1751796259829</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1751796259829</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -325,5 +300,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
   </component>
 </project>

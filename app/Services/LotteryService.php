@@ -30,7 +30,7 @@ class LotteryService
         }
     }
 
-    function getNumbersCombinations()
+    function getNumbersCombinations($maxCombinations = 10)
     {
         $results = LotteryResults::all();
         $frequencies = $this->getNumberFrequencies($results);
@@ -47,7 +47,7 @@ class LotteryService
         // Generar combinaciones siguiendo las reglas
         $combinations = $this->generateCombinations($results, $distribution, $mostFrequent, $leastFrequent);
 
-        return array_slice($combinations, 0, 10);
+        return array_slice($combinations, 0, $maxCombinations);
     }
 
     /**

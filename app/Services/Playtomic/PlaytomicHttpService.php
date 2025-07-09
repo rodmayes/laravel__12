@@ -89,35 +89,36 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
     }
 
     public function preBooking(Booking $booking, Resource $resource, Timetable $timetable = null){
-        $timetable_summer = $booking->club->timetableSummerActive;
-        $selected_timetable = $timetable ?: $booking->timetable;
-        $time = str_replace("%3A",":",($timetable_summer ? $selected_timetable->playtomic_id_summer : $selected_timetable->playtomic_id));
-        $data = [
-            "allowed_payment_method_types" => ["OFFER", "CASH", "MERCHANT_WALLET", "DIRECT", "SWISH", "IDEAL", "BANCONTACT", "PAYTRAIL", "CREDIT_CARD", "QUICK_PAY"],
-            'user_id' => $this->user->playtomic_id,
-            "cart" => [
-                "requested_item" => [
-                    "cart_item_type"=> "CUSTOMER_MATCH",
-                    "cart_item_voucher_id" => null,
-                    "cart_item_data" => [
-                        "supports_split_payment" => true,
-                        "number_of_players" => "4",
-                        "tenant_id" => $booking->club->playtomic_id,
-                        "resource_id" => $resource->playtomic_id,
-                        "start" =>  $booking->started_at->format('Y-m-d').$time.":00",
-                        "duration"=> "90",
-                        "match_registrations" => [
-                            [
-                                "user_id" => $this->user->playtomic_id,
-                                "pay_now" => true
+
+        try{
+            $timetable_summer = $booking->club->timetableSummerActive;
+            $selected_timetable = $timetable ?: $booking->timetable;
+            $time = str_replace("%3A",":",($timetable_summer ? $selected_timetable->playtomic_id_summer : $selected_timetable->playtomic_id));
+            $data = [
+                "allowed_payment_method_types" => ["OFFER", "CASH", "MERCHANT_WALLET", "DIRECT", "SWISH", "IDEAL", "BANCONTACT", "PAYTRAIL", "CREDIT_CARD", "QUICK_PAY"],
+                'user_id' => $this->user->playtomic_id,
+                "cart" => [
+                    "requested_item" => [
+                        "cart_item_type"=> "CUSTOMER_MATCH",
+                        "cart_item_voucher_id" => null,
+                        "cart_item_data" => [
+                            "supports_split_payment" => true,
+                            "number_of_players" => "4",
+                            "tenant_id" => $booking->club->playtomic_id,
+                            "resource_id" => $resource->playtomic_id,
+                            "start" =>  $booking->started_at->format('Y-m-d').$time.":00",
+                            "duration"=> "90",
+                            "match_registrations" => [
+                                [
+                                    "user_id" => $this->user->playtomic_id,
+                                    "pay_now" => true
+                                ]
                             ]
                         ]
                     ]
                 ]
-            ]
-        ];
+            ];
 
-        try {
             $name = $booking->club->name . ' ' . $resource->name.' '.$booking->started_at->format('d-m-Y') . ' ' . $timetable->name;
             Log::info('Preboooking api at '.Carbon::now()->format('d-m-Y H:i:s').' '.$name);
             $response = $this->sendPost($data, 'v1/payment_intents');

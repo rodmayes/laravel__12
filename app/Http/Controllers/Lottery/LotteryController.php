@@ -2,8 +2,10 @@
 namespace App\Http\Controllers\Lottery;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\getLotteryNumbersJob;
 use App\Mail\sendLotteryNumbersMailable;
 use App\Models\LotteryResults;
+use App\Models\ScheduledJob;
 use App\Services\LotteryService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -160,9 +162,27 @@ class LotteryController extends Controller
 
     public function makeMagikNumbers(Request $request){
         try{
+            $scheduled = ScheduledJob::create([
+                'name' => 'Lottery: Generating magik numbers', // o lo que quieras
+                'status' => 'pending',             // estado inicial
+                'scheduled_for' => Carbon::now(),          // si aplica
+                'executed_at' => null,
+                'model_type' => LotteryResults::class, // si usas morphs
+                'model_id' => null, // si aplica
+                'created_by' => auth()->id(), // si guardas el usuario
+            ]);
+
+            $job = getLotteryNumbersJob::dispatch(10);
+
+            $scheduled->job_id = $job->uuid;
+            $scheduled->save();
+
+            return response()->json(['uuid' => $job->uuid]);
+
+            /*
             $service = new LotteryService();
             $service->setExcludedNumbers($request->excludedNumbers ?? []);
-            $combinations =  $service->getNumbersCombinations();
+            $combinations =  $service->getNumbersCombinations(10);
 
             if (count($combinations) > 0) {
                 foreach ($combinations as $combination) {
@@ -175,6 +195,7 @@ class LotteryController extends Controller
             return response()->json([
                 'combinations' => $combinations
             ]);
+            */
         }catch(\Exception $e){
             Log::error($e->getMessage());
             return back()->with('error', 'Generate magik numbers unsuccessfully: '.$e->getMessage());

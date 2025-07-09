@@ -82,7 +82,7 @@ const showLogs = (item) => {
                    :rowsPerPageOptions="[5, 10, 20, 50]" class="mt-4" />
 
         <Dialog v-model:visible="showLogsDialog" :style="{ width: '50rem' }" header="Logs" :modal="true" maximizable >
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-1 gap-2">
                 <p v-for="log in data.logs">
                     <small>
                         <i class="fas fa-dot-circle"></i> {{log}}

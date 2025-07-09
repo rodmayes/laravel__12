@@ -30,11 +30,8 @@ class LotteryResults extends Model
         'frequencies'
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'date_at'
+    protected $casts = [
+        'startdate_ated_at' => 'datetime',
     ];
 
     protected $fillable = [

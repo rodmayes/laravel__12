@@ -72,6 +72,8 @@ Route::get('/list', function () {
      ]);
  });
 
+Route::get('/job/status/{uuid}', [\App\Http\Controllers\JobController::class, 'status']);
+
  /*
 Route::get('/dashboard', function () {
      return Inertia::render('Dashboard');

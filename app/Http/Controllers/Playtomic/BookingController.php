@@ -172,12 +172,16 @@ class BookingController extends Controller
                 'booking_preference' => $request->booking_preference
             ]);
 
+            /*
             if(Carbon::now(env('APP_DATETIME_ZONE'))->startOfDay()->diffInDays($booking->started_at->startOfDay()) >= (int)$club->days_min_booking){
                 $booking->status = Booking::STATUS_ONTIME;
             }
             else{
                 $booking->status = Booking::STATUS_TIMEOUT;
             }
+            */
+
+            $booking->status = Booking::STATUS_ONTIME;
 
             $booking->save();
 
