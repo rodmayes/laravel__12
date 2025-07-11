@@ -91,12 +91,9 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
     public function preBooking(Booking $booking, Resource $resource, Timetable $timetable = null){
 
         try{
-            dump(1);
             $timetable_summer = $booking->club->timetableSummerActive;
-            dump(2);
             $selected_timetable = $timetable ?: $booking->timetable;
             $time = str_replace("%3A",":",($timetable_summer ? $selected_timetable->playtomic_id_summer : $selected_timetable->playtomic_id));
-            dump(3);
             $data = [
                 "allowed_payment_method_types" => ["OFFER", "CASH", "MERCHANT_WALLET", "DIRECT", "SWISH", "IDEAL", "BANCONTACT", "PAYTRAIL", "CREDIT_CARD", "QUICK_PAY"],
                 'user_id' => $this->user->playtomic_id,
@@ -121,10 +118,12 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
                     ]
                 ]
             ];
-dump(4);
+
             $name = $booking->club->name . ' ' . $resource->name.' '.$booking->started_at->format('d-m-Y') . ' ' . $timetable->name;
+            dump(5);
             Log::info('Preboooking api at '.Carbon::now()->format('d-m-Y H:i:s').' '.$name);
             $response = $this->sendPost($data, 'v1/payment_intents');
+            dump(6);
             return $this->response($response);
         }catch(\Exception $e){
             Log::error('Catch preboooking '.$e->getMessage());

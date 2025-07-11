@@ -43,7 +43,7 @@ class UserLoginJob implements ShouldQueue
 
         }catch (\Exception $e){
             Log::error('Error Login: '.$e->getMessage());
-            
+
         }
     }
 }
