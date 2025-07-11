@@ -95,7 +95,7 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
             $timetable_summer = $booking->club->timetableSummerActive;
             dump(2);
             $selected_timetable = $timetable ?: $booking->timetable;
-            $time = str_replace("%3A",":",($timetable_summer ? $selected_timetable->playtomic_id_summer : $selected_timetable->playtomic_id));77
+            $time = str_replace("%3A",":",($timetable_summer ? $selected_timetable->playtomic_id_summer : $selected_timetable->playtomic_id));
             dump(3);
             $data = [
                 "allowed_payment_method_types" => ["OFFER", "CASH", "MERCHANT_WALLET", "DIRECT", "SWISH", "IDEAL", "BANCONTACT", "PAYTRAIL", "CREDIT_CARD", "QUICK_PAY"],
