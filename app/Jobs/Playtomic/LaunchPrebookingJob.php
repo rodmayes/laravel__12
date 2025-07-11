@@ -66,6 +66,7 @@ class LaunchPrebookingJob implements ShouldQueue
         $this->appendLog($booking, 'Start prebooking for booking ID ' . $booking->id);
 
         try {
+            Log::debug('Prebooking init for booking ID ' . $booking->id);
             $response = $this->service->preBooking($booking, $resource, $timetable);
             $this->appendLog($booking, 'Response prebooking');
             Log::debug('Response prebooking', ['response' => $response]);

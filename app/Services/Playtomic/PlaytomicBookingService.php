@@ -48,7 +48,6 @@ class PlaytomicBookingService
             ? dispatch($loginJob)
             : dispatch($loginJob->delay($executionDate1MinutBefore));
 
-        Log::debug('Dispatched');
         // Guardar el ScheduledJob usando el UUID real
         $booking->scheduledJobs()->create([
             'job_id'         => (string) Str::uuid(),
@@ -57,7 +56,6 @@ class PlaytomicBookingService
             'payload'        => ['user_id' => $this->userPlaytomic->id, 'action' => 'login'],
             'status'         => 'pending'
         ]);
-        Log::debug('ScheduledJobs created ');
 
         $this->enqueuePrebookingJobs($booking, $executionDate, $runNow);
     }
