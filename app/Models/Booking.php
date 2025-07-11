@@ -40,22 +40,6 @@ class Booking extends Model
         ['id' => 180, 'name' => '3h']
     ];
 
-    public $orderable = [
-        'id',
-        'name',
-        'playtomic_id',
-        'club_id',
-        'resources',
-        'timetables',
-        'status',
-        'started_at',
-        'created_by',
-        'public',
-        'booked_at',
-        'player',
-        'duration'
-    ];
-
     public $filterable = [
         'id',
         'name',

@@ -14,15 +14,6 @@ class Club extends Model
 
     public $table = 'playtomic_club';
 
-    public $orderable = [
-        'id',
-        'name',
-        'playtomic_id',
-        'days_min_booking',
-        'timetable_summer',
-        'booking_hour'
-    ];
-
     public $filterable = [
         'id',
         'name',
@@ -32,10 +23,10 @@ class Club extends Model
         'booking_hour'
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
+    protected $cats = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     protected $fillable = [

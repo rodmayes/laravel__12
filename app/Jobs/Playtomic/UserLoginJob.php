@@ -19,6 +19,8 @@ class UserLoginJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
     use UpdateScheduledJobTrait;
 
+    public string $uuid;
+
     protected int $userId;
 
     public function __construct(int $userId)

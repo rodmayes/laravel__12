@@ -16,13 +16,6 @@ class LotteryResults extends Model
 
     public $table = 'lottery_results';
 
-    public $orderable = [
-        'id',
-        'date_at',
-        'numbers',
-        'frequencies'
-    ];
-
     public $filterable = [
         'id',
         'date_at',
@@ -31,7 +24,7 @@ class LotteryResults extends Model
     ];
 
     protected $casts = [
-        'startdate_ated_at' => 'datetime',
+        'date_at' => 'datetime',
     ];
 
     protected $fillable = [
