@@ -40,10 +40,10 @@ class UserLoginJob implements ShouldQueue
                 Log::debug('NOT Logged');
             }
             Log::info('Logged '.$user->email);
-            //$this->setScheduledJobStatus($this->uuid, 'success', 'Logged '.$user->email);
+
         }catch (\Exception $e){
             Log::error('Error Login: '.$e->getMessage());
-            //$this->setScheduledJobStatus($this->uuid, 'error', 'Error Login: '.$e->getMessage());
+            
         }
     }
 }
