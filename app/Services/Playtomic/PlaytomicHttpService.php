@@ -120,10 +120,8 @@ class PlaytomicHttpService extends ApiHttpServiceRequest
             ];
 
             $name = $booking->club->name . ' ' . $resource->name.' '.$booking->started_at->format('d-m-Y') . ' ' . $timetable->name;
-            dump(5);
             Log::info('Preboooking api at '.Carbon::now()->format('d-m-Y H:i:s').' '.$name);
             $response = $this->sendPost($data, 'v1/payment_intents');
-            dump(6);
             return $this->response($response);
         }catch(\Exception $e){
             Log::error('Catch preboooking '.$e->getMessage());
