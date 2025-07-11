@@ -40,7 +40,7 @@ class BookingsSetStatusClosed extends Command
      */
     public function handle()
     {
-        $this->info('Booking status init');
+        $this->info('Booking status closed init');
         $bookings = Booking::notClosed()->orderBy('started_at','desc')->get();
         foreach($bookings as $booking){
             $day_to_date = (Carbon::createFromDate($booking->started_at))->subDays((int)$booking->club->days_min_booking);
