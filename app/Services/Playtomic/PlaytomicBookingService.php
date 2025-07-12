@@ -41,21 +41,12 @@ class PlaytomicBookingService
         $executionDate1MinutBefore = $executionDate->copy()->subMinute();
 
         // Crear el job (sin UUID manual)
-        $loginJob = new UserLoginJob($this->userPlaytomic->id);
+        $loginJob = new UserLoginJob($this->userPlaytomic->id, $booking->id);
 
         // Dispatch y captura del job encolado (con UUID de Laravel)
         $runNow
             ? dispatch($loginJob)
             : dispatch($loginJob->delay($executionDate1MinutBefore));
-
-        // Guardar el ScheduledJob usando el UUID real
-        $booking->scheduledJobs()->create([
-            'job_id'         => (string) Str::uuid(),
-            'job_type'       => get_class($loginJob),
-            'scheduled_for'  => $executionDate1MinutBefore,
-            'payload'        => ['user_id' => $this->userPlaytomic->id, 'action' => 'login'],
-            'status'         => 'pending'
-        ]);
 
         $this->enqueuePrebookingJobs($booking, $executionDate, $runNow);
     }
@@ -104,18 +95,6 @@ class PlaytomicBookingService
                 $runNow
                     ? dispatch($job)
                     : dispatch($job->delay($jobTime));
-
-                $booking->scheduledJobs()->create([
-                    'job_id'        => (string) Str::uuid(),
-                    'job_type'      => get_class($job),
-                    'scheduled_for' => $jobTime,
-                    'payload'       => [
-                        'resource_id'  => $resource->id,
-                        'timetable_id' => $timetable->id,
-                        'action'       => 'prebooking'
-                    ],
-                    'status'         => 'pending'
-                ]);
 
                 $delaySeconds++;
             }

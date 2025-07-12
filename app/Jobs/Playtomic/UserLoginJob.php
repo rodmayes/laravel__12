@@ -4,28 +4,25 @@ namespace App\Jobs\Playtomic;
 
 use App\Models\User;
 use App\Services\Playtomic\PlaytomicHttpService;
-use App\Trait\UpdateScheduledJobTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 class UserLoginJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
-    use UpdateScheduledJobTrait;
 
-    public string $uuid;
+    public int $userId;
+    public int $bookingId;
 
-    protected int $userId;
-
-    public function __construct(int $userId)
+    public function __construct(int $userId, $bookingId = null)
     {
         $this->userId = $userId;
+        $this->bookingId = $bookingId;
     }
 
     public function handle(){

@@ -9,8 +9,9 @@ use App\Http\Controllers\UserController;
 use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\ScheduledJobController;
 use App\Http\Controllers\ScheduledJobCommandController;
+use App\Http\Controllers\Auth\TelegramLoginController;
+use App\Http\Controllers\Administration\JobController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,16 +88,6 @@ Route::middleware('auth')->group(function () {
 });
  */
 
-// SCHEDULED JOBS
-Route::prefix('scheduled-jobs')->name('scheduled-jobs.')->middleware(['auth', 'login.confirmed'])->group(function () {
-    Route::get('/', [ScheduledJobController::class, 'index'])->name('index');
-    Route::post('getData', [ScheduledJobController::class, 'getData'])->name('getData');
-    Route::post('refreshData', [ScheduledJobController::class, 'refreshData'])->name('refreshData');
-    Route::post('/{scheduledJob}/cancel', [ScheduledJobController::class, 'cancel'])->name('cancel');
-    Route::put('/{scheduledJob}', [ScheduledJobController::class, 'update'])->name('update');
-    Route::delete('/{scheduledJob}', [ScheduledJobController::class, 'destroy'])->name('destroy');
-});
-
 // SCHEDULED JOBS COMMANDS
 Route::prefix('scheduled-job-commands')->name('scheduled-job-commands.')->middleware(['auth', 'login.confirmed'])->group(function () {
     Route::get('/', [ScheduledJobCommandController::class, 'index'])->name('index');
@@ -109,18 +100,8 @@ Route::prefix('scheduled-job-commands')->name('scheduled-job-commands.')->middle
 });
 
 // TELEGRAM
-Route::get('/telegram/confirm/{token}', function ($token) {
-    $user = \App\Models\User::where('login_token', $token)->firstOrFail();
-
-    // Autenticar al usuario
-    \Illuminate\Support\Facades\Auth::login($user);
-
-    // Limpia el token (opcional)
-    $user->confirmation_token = null;
-    $user->save();
-
-    return redirect()->intended('/');
-})->name('telegram.confirm');
+Route::get('/telegram/confirm/{token}', [TelegramLoginController::class, 'confirm'])->name('telegram.login.confirm');
+Route::post('/telegram/webhook', [TelegramLoginController::class, 'webhook'])->name('telegram.webhook');
 
 Route::get('/telegram/confirm-login/{token}', function ($token) {
     $user = User::where('login_token', $token)->firstOrFail();
@@ -130,14 +111,13 @@ Route::get('/telegram/confirm-login/{token}', function ($token) {
     return redirect()->route('dashboard')->with('success', 'Login confirmado.');
 })->name('telegram.login.confirm');
 
-Route::post('/telegram/webhook', function (\Illuminate\Http\Request $request) {
-    $data = $request->all();
-    \Illuminate\Support\Facades\Log::info('Mensaje recibido de Telegram:', $data);
 
-    // Puedes actuar en función del mensaje recibido
-    // $data['message']['text'], $data['message']['chat']['id'], etc.
-
-    return response()->noContent();
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('jobs')->name('jobs.')->group(function () {
+        Route::get('', [JobController::class, 'index'])->name('index');
+        Route::post('refreshData', [JobController::class, 'refreshData'])->name('refreshData');
+        Route::delete('{id}', [JobController::class, 'destroy'])->name('delete');
+    });
 });
 
 

@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Booking;
-use App\Models\ScheduledJob;
 use App\Services\Playtomic\PlaytomicBookingService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +12,7 @@ class BookingJobScheduler
     public function reschedule(Booking $booking): void
     {
         // 🧹 1. Cancelar todos los jobs anteriores
-        $this->deletePendingJobsForBooking($booking);
+        $this->deletePendingJobsForBooking($booking->id, ['UserLoginJob', 'LaunchPrebookingJob']);
 
         // 🔁 2. Crear los nuevos jobs
         $service = new PlaytomicBookingService($booking->player);
@@ -26,21 +25,32 @@ class BookingJobScheduler
             ->log('Booking - recreating jobs');
     }
 
-    public function deletePendingJobsForBooking(Booking $booking): void
+    function deletePendingJobsForBooking($bookingId, array $jobTypes = [])
     {
-        // 🗑️ Eliminar jobs de la cola (Laravel) por UUID
-        $booking->scheduledJobs()->each(function ($scheduledJob) {
-            DB::table('jobs')
-                ->where('uuid', $scheduledJob->job_id)
-                ->delete();
+        $jobs = DB::table('jobs')->get();
 
-            $scheduledJob->delete();
-        });
+        foreach ($jobs as $job) {
+            $payload = json_decode($job->payload);
+            $data = $payload->data ?? null;
 
-        activity()
-            ->performedOn($booking)
-            ->causedBy(Auth::user())
-            ->withProperties(['model' => $booking->toArray()])
-            ->log('Booking - deleted jobs');
+            if (! isset($data->command)) {
+                continue;
+            }
+
+            $command = @unserialize($data->command);
+            if (! is_object($command)) {
+                continue;
+            }
+
+            $vars = get_object_vars($command);
+
+            if (
+                isset($vars['bookingId']) &&
+                (empty($jobTypes) || in_array(class_basename($data->commandName), $jobTypes))
+                && $vars['bookingId'] === $bookingId
+            ) {
+                DB::table('jobs')->where('id', $job->id)->delete();
+            }
+        }
     }
 }

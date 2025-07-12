@@ -104,11 +104,6 @@ class Booking extends Model
         return $this->belongsTo(Timetable::class);
     }
 
-    public function scheduledJobs(): MorphMany
-    {
-        return $this->morphMany(ScheduledJob::class, 'schedulable');
-    }
-
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');

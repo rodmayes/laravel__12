@@ -1,7 +1,7 @@
 <script setup>
 import {computed, reactive, ref} from 'vue';
-import {isToday, isPast, parseISO} from "date-fns";
-import {formatDate, formatDateLocal} from "@/composables/useFormatters.js";
+import {parseISO} from "date-fns";
+import {formatDateLocal} from "@/composables/useFormatters.js";
 
 const props = defineProps({
     items: Object,
@@ -76,6 +76,14 @@ const showLogs = (item) => {
                 </div>
             </div>
         </div>
+        <Menubar class="mt-4">
+            <template #start>
+                <Button icon="pi pi-refresh" text @click="emit('refresh')"/>
+            </template>
+
+            <template #end>
+            </template>
+        </Menubar>
         <Paginator :rows="items.per_page" :totalRecords="items.total"
                    :first="(items.current_page - 1) * items.per_page"
                    @page="props.onPageChange"

@@ -3,7 +3,6 @@
 namespace App\Observer;
 
 use App\Models\Booking;
-use App\Models\ScheduledJob;
 use App\Services\BookingJobScheduler;
 use App\Services\Playtomic\PlaytomicBookingService;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +52,7 @@ class BookingObserver
      */
     public function deleting(Booking $booking)
     {
-        app(BookingJobScheduler::class)->deletePendingJobsForBooking($booking);
+        app(BookingJobScheduler::class)->deletePendingJobsForBooking($booking->id, ['UserLoginJob', 'LaunchPrebookingJob']);
 
         activity()
             ->performedOn($booking)

@@ -57,7 +57,8 @@ const model = ref([
                 items: [
                     { label: 'Telescope', icon: 'pi pi-fw pi-user', to: '/telescope', can:'user.read' },
                     { label: 'Pulse', icon: 'pi pi-fw pi-user', to: '/pulse', can:'user.read' },
-                    { label: 'Jobs', icon: 'pi pi-fw pi-cog', to: '/scheduled-jobs', can:'user.read' },
+                    { label: 'Jobs', icon: 'pi pi-fw pi-cog', to: '/admin/jobs', can:'user.read' },
+                    { label: 'Queue monitor', icon: 'pi pi-fw pi-cog', to: '/admin/monitored-jobs', can:'user.read' },
                     { label: 'Scheduled commands', icon: 'pi pi-fw pi-cog', to: '/scheduled-job-commands', can:'user.read' },
                     { label: 'Logs', icon: 'pi pi-fw pi-cog', to: '/log-viewer', can:'user.read' },
                 ]

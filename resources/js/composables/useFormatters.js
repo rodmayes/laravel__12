@@ -33,6 +33,11 @@ export const formatDateLocal = (date) => {
     return `${year}-${month}-${day}`;
 };
 
+export const formatDateUnix = (unix) => {
+    if (!unix) return 'N/A';
+    return new Date(unix * 1000).toLocaleString(); // Unix timestamp → JS timestamp
+}
+
 export const getModifiedDate = (item) => {
     if (!item?.started_at || !item?.club?.days_min_booking) return null;
 

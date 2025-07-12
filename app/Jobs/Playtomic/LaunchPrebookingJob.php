@@ -5,11 +5,9 @@ namespace App\Jobs\Playtomic;
 use App\Mail\PlaytomicBookingConfirmation;
 use App\Models\Booking;
 use App\Models\Resource;
-use App\Models\ScheduledJob;
 use App\Models\Timetable;
 use App\Models\User;
 use App\Services\Playtomic\PlaytomicHttpService;
-use App\Trait\UpdateScheduledJobTrait;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,7 +22,6 @@ use romanzipp\QueueMonitor\Traits\IsMonitored;
 class LaunchPrebookingJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
-    use UpdateScheduledJobTrait;
 
     public int $userId;
     public int $bookingId;
@@ -45,12 +42,6 @@ class LaunchPrebookingJob implements ShouldQueue
 
     public function handle(): void
     {
-        $scheduled = ScheduledJob::where('job_id', $this->uuid)->first();
-
-        if ($scheduled && $scheduled->cancelled_at) {
-            Log::info("Job {$this->uuid} cancelado. No se ejecuta.");
-            return;
-        }
 
         $user = User::find($this->userId);
         $booking = Booking::find($this->bookingId);
@@ -88,10 +79,8 @@ class LaunchPrebookingJob implements ShouldQueue
                 $this->appendLog($booking, 'Booking failed: ' . $bookingResult['error']);
             }
 
-            //$this->setScheduledJobStatus($this->uuid, 'success', 'Booked');
         } catch (\Throwable $e) {
             $this->appendLog($booking, 'Job error: ' . $e->getMessage());
-            //$this->setScheduledJobStatus($this->uuid, 'failed', 'Job error: ' . $e->getMessage());
         }
     }
 

@@ -22,7 +22,6 @@ class TimetableController extends Controller
         return Inertia::render('Playtomic/TimeTable/Index', [
             'title'         => 'Timestables',
             'filters'       => $request->all(['search', 'field', 'order']),
-            //'items'         => $this->getData($request)
         ]);
     }
 

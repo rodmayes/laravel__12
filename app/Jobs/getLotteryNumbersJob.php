@@ -2,10 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\Lottery\LotteryController;
 use App\Mail\sendLotteryNumbersMailable;
-use App\Models\LotteryResults;
-use App\Models\ScheduledJob;
 use App\Services\LotteryService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,10 +35,6 @@ class getLotteryNumbersJob implements ShouldQueue
     public function handle():void
     {
         try{
-            $scheduled = ScheduledJob::where('job_id', $this->uuid)->first();
-            $scheduled->status = 'running';
-            $scheduled->save();
-
             $service = new LotteryService();
             $service->setExcludedNumbers($request->excludedNumbers ?? []);
             $combinations =  $service->getNumbersCombinations();
@@ -58,14 +51,11 @@ class getLotteryNumbersJob implements ShouldQueue
                 echo "No valid combination found. \n\r";
                 Log::error('No valid combination found.');
             }
-            $scheduled->status = 'success';
             echo "Finished \n\r";
         }catch(\Exception $e){
-            $scheduled->status = 'success';
             Log::error($e->getMessage());
             echo "Error: ".$e->getMessage();
         }
-        $scheduled->save();
     }
 
 }
