@@ -26,27 +26,21 @@ const makeMagikNumbers = () => {
     loading.value = true;
     axios.post(route('lottery.combinations.make-magik-numbers'), {excludedNumbers: data.excludedNumbers})
         .then(response => {
-            data.combinations = response.data.combinations;
-            toast.add({ severity: 'success', summary: 'Magik numbers', detail: 'Magik numbers generated successfully', life: 3000});
+            const uuid = response.data.uuid;
+            if (uuid) {
+                checkJobResult(uuid);
+            } else {
+                toast.add({ severity: 'error', summary: 'Error', detail: 'UUID no recibido del backend', life: 3000 });
+            }
+            toast.add({ severity: 'success', summary: 'Magik numbers', detail: 'Magik numbers in process', life: 3000});
         })
         .catch(() => {
             toast.add({severity: 'error', summary: 'Magik numbers', detail: 'Magik numbers generated unSuccessfully', life: 3000});
         })
         .finally(() => {
-        loading.value = false;
+        //loading.value = false;
     });
 };
-
-const interval = setInterval(async () => {
-    const res = await axios.get(`/job/status/${uuid}`);
-    if (res.data.status === 'finished') {
-        status.value = 'Finalizado';
-        clearInterval(interval);
-    } else if (res.data.status === 'failed') {
-        status.value = 'Ha fallado';
-        clearInterval(interval);
-    }
-}, 3000);
 
 const onSendMail = () => {
     data.sendMail = false;
@@ -72,6 +66,41 @@ const toggleNumber = (num) => {
 const getSortedCombinations = () => {
     return data.combinations.map(comb => [...comb].sort((a, b) => a - b));
 };
+
+const checkJobResult = (uuid) => {
+    const maxTime = 30000; // 30 segundos
+    const intervalTime = 3000; // cada 3 segundos
+    let elapsed = 0;
+
+    const interval = setInterval(async () => {
+        elapsed += intervalTime;
+
+        try {
+            const response = await axios.get(route('lottery.combinations.magic-numbers-from-cache', { uuid }));
+            const result = response.data;
+
+            if (result && result.length) {
+                clearInterval(interval);
+                data.combinations = result;
+                loading.value = false;
+                toast.add({ severity: 'success', summary: '¡Combinations ready!', detail: 'Magik numbers generated successfully', life: 3000 });
+                return;
+            }
+
+            if (elapsed >= maxTime) {
+                clearInterval(interval);
+                loading.value = false;
+                toast.add({ severity: 'error', summary: 'Timeout', detail: 'Could not fetch combinations in time', life: 3000 });
+            }
+
+        } catch (e) {
+            clearInterval(interval);
+            loading.value = false;
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to get job result', life: 3000 });
+        }
+    }, intervalTime);
+};
+
 
 const breadcrum = ref([
     { label: 'Lottery' },

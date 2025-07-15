@@ -35,44 +35,63 @@ const showLogs = (item) => {
     <div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div v-for="item in cards" :key="item.id" class="p-4 border rounded shadow">
-                <div class="flex justify-between mb-2">
-                    <div>
-                        <h3 class="font-bold">{{ item.player.name }}</h3>
-                        <p class="text-sm text-gray-500">{{ item.club.name }}</p>
+                <!-- Cabecera con nombre a la izquierda, estado y fecha a la derecha -->
+                <div class="flex justify-between items-start w-full mb-2">
+                    <!-- Izquierda: jugador y club -->
+                    <div class="flex flex-col">
+                        <h3 class="font-bold text-white">{{ item.player.name }}</h3>
+                        <p class="text-sm text-gray-400">{{ item.club.name }}</p>
                     </div>
-                    <span :class="{
-                        'text-green-700': item.status === 'on-time',
-                        'text-blue-700': item.status === 'closed',
-                        'text-red-700': item.status === 'time-out'
-                    }">
-                        [{{item.id}}] {{ item.status }}
-                    </span>
+
+                    <!-- Derecha: estado arriba, fecha debajo -->
+                    <div class="flex flex-col items-end text-sm">
+                        <!-- Estado del job -->
+                        <span
+                            :class="{
+                            'text-green-700': item.status === 'on-time',
+                            'text-blue-700': item.status === 'closed',
+                            'text-red-700': item.status === 'time-out'
+                          }"
+                                                class="font-medium"
+                                            >
+                          [{{ item.id }}] {{ item.status }}
+                        </span>
+
+                        <!-- Fecha modificada -->
+                        <p class="text-gray-400 whitespace-nowrap text-sm">
+                            <span v-if="item.modified_at && !isNaN(Date.parse(item.modified_at))">
+                                Job: {{ item.modified_at }}
+                            </span>
+                            <span v-else>-</span>
+                        </p>
+                    </div>
                 </div>
+
+
                 <p><strong>Booking day: </strong> {{ item.started_at ? formatDateLocal(parseISO(item.started_at)) : '' }}</p>
-                <p>
-                    <strong>Job day: </strong>
-                    <span v-if="item.modified_at && !isNaN(Date.parse(item.modified_at))">
-                    {{ item.modified_at }}
-                    </span>
-                    <span v-else>-</span>
-                </p>
 
                 <p><strong>Resources: </strong>
-                    <span v-for="r in item.resourcesNames" :key="r.id">{{ r.name }}</span>
+                    <Tag v-for="r in item.resourcesNames" :key="r.id" :value="r.name"/>
                 </p>
                 <p><strong>Timetables: </strong>
-                    <span v-for="t in item.timetablesNames" :key="t.id">{{ t.name }}</span>
+                    <Tag v-for="t in item.timetablesNames" :key="t.id" :value="t.name"/>
                 </p>
-                <div class="mt-2 flex justify-end gap-2">
-                    <Button icon="pi pi-pencil" outlined rounded
-                            @click="$inertia.visit(route('playtomic.bookings.edit', item.id))"
-                            v-if="can(['playtomic.booking_edit'])" />
-                    <Button icon="pi pi-comments" severity="info" outlined rounded
-                            @click="showLogs(item)"
-                            />
-                    <Button icon="pi pi-trash" severity="danger" outlined rounded
-                            @click="emit('confirmDelete', item)"
-                            v-if="can(['playtomic.booking_delete'])" />
+                <div class="flex justify-between">
+                    <div class="mt-2 flex justify-start gap-2">
+                        <Tag v-if="item.isBooked" severity="success" value="Booked" rounded/>
+                        <Tag v-else severity="danger" value="Non Booked" rounded/>
+                    </div>
+                    <div class="mt-2 flex justify-end gap-2">
+                        <Button icon="pi pi-pencil" outlined rounded
+                                @click="$inertia.visit(route('playtomic.bookings.edit', item.id))"
+                                v-if="can(['playtomic.booking_edit'])" />
+                        <Button icon="pi pi-comments" severity="info" outlined rounded
+                                @click="showLogs(item)"
+                                />
+                        <Button icon="pi pi-trash" severity="danger" outlined rounded
+                                @click="emit('confirmDelete', item)"
+                                v-if="can(['playtomic.booking_delete'])" />
+                    </div>
                 </div>
             </div>
         </div>

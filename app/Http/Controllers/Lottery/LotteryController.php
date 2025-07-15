@@ -13,6 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -77,6 +78,7 @@ class LotteryController extends Controller
             ]);
 
             $validated['date_at'] = Carbon::parse($validated['date_at'])->toDateString(); // "2025-06-15"
+            sort($validated['numbers']);
             $validated['numbers'][] = $request->complementary;
 
             // Validar que sea un array con exactamente 6 números
@@ -161,27 +163,11 @@ class LotteryController extends Controller
 
     public function makeMagikNumbers(Request $request){
         try{
-            $job = getLotteryNumbersJob::dispatch(10);
+            $uuid = (string) Str::uuid();
+            getLotteryNumbersJob::dispatch($request->excludedNumbers ?? [], 10, $uuid);
 
-            return response()->json(['uuid' => $job->uuid]);
+            return response()->json(['uuid' => $uuid]);
 
-            /*
-            $service = new LotteryService();
-            $service->setExcludedNumbers($request->excludedNumbers ?? []);
-            $combinations =  $service->getNumbersCombinations(10);
-
-            if (count($combinations) > 0) {
-                foreach ($combinations as $combination) {
-                    sort($combination);
-                }
-            } else {
-                return back()->with('error', 'No valid combinations found');
-            }
-
-            return response()->json([
-                'combinations' => $combinations
-            ]);
-            */
         }catch(\Exception $e){
             Log::error($e->getMessage());
             return back()->with('error', 'Generate magik numbers unsuccessfully: '.$e->getMessage());

@@ -45,7 +45,7 @@ class LotteryService
         $leastFrequent = array_slice($frequencies, $half, null, true);
 
         // Generar combinaciones siguiendo las reglas
-        $combinations = $this->generateCombinations($results, $distribution, $mostFrequent, $leastFrequent);
+        $combinations = $this->generateCombinations($results, $distribution, $mostFrequent, $leastFrequent, $maxCombinations);
 
         return array_slice($combinations, 0, $maxCombinations);
     }
@@ -92,7 +92,7 @@ class LotteryService
     }
 
 
-    private function generateCombinations($results, $distribution, $mostFrequent, $leastFrequent)
+    private function generateCombinations($results, $distribution, $mostFrequent, $leastFrequent, $maxCombinations)
     {
         $combinations = [];
         $numbersByLastAppearance = array_keys(array_slice($this->getNumbersByLastAppearance($results),0,5, true));
@@ -114,6 +114,10 @@ class LotteryService
                     // Aplicar las reglas adicionales de validación
                     if ($this->isValidCombination($combo, $numbersByLastAppearance)) {
                         $combinations[] = $combo;
+                    }
+
+                    if(count($combinations) >= $maxCombinations) {
+                        break;
                     }
                 }
             }
