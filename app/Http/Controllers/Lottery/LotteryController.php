@@ -106,7 +106,7 @@ class LotteryController extends Controller
                 'complementary' => 'required|integer|between:1,49',
             ]);
 
-            $validated['date_at'] = Carbon::parse($validated['date_at'])->toDateString(); // "2025-06-15"
+            $validated['date_at'] = Carbon::parse($validated['date_at'])->addDay()->toDateString(); // "2025-06-15"
             $validated['numbers'][] = $request->complementary;
 
             // Validar que sea un array con exactamente 6 números
