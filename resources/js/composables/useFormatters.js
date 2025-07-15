@@ -48,3 +48,27 @@ export const getModifiedDate = (item) => {
 
     return subDays(date, days);
 };
+
+export const formatDatePhp = (input, format = 'd-m-Y H:i') => {
+    const date = new Date(input);
+    if (isNaN(date.getTime())) return '';
+
+    const pad = (n) => String(n).padStart(2, '0');
+
+    const map = {
+        d: pad(date.getDate()),
+        m: pad(date.getMonth() + 1),
+        Y: date.getFullYear(),
+        y: String(date.getFullYear()).slice(-2),
+        H: pad(date.getHours()),
+        i: pad(date.getMinutes()),
+        s: pad(date.getSeconds()),
+        // Extras si lo necesitas
+        D: date.toLocaleDateString('es-ES', { weekday: 'short' }),
+        l: date.toLocaleDateString('es-ES', { weekday: 'long' }),
+        F: date.toLocaleDateString('es-ES', { month: 'long' }),
+        M: date.toLocaleDateString('es-ES', { month: 'short' }),
+    };
+
+    return format.replace(/d|m|Y|y|H|i|s|D|l|F|M/g, (token) => map[token] || token);
+};

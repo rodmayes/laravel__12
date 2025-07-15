@@ -7,7 +7,7 @@ import { useForm } from '@inertiajs/vue3';
 import { ref, reactive, onMounted } from "vue";
 import pkg from "lodash";
 import axios from "axios";
-import {formatDateTime} from "@/composables/useFormatters.js";
+import {formatDatePhp} from "@/composables/useFormatters.js";
 
 const { pickBy } = pkg;
 
@@ -128,7 +128,7 @@ const breadcrum = ref([
                 <Column header="No" field="id" sortable></Column>
                 <Column field="date_at" header="Date" sortable>
                     <template #body="{data}">
-                        {{ formatDateTime(data.date_at) }}
+                        {{ formatDatePhp(data.date_at, 'd-m-Y') }}
                     </template>
                 </Column>
                 <Column field="numbers" header="Numbers" sortable></Column>
