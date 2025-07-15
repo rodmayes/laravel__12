@@ -77,7 +77,7 @@ class LotteryController extends Controller
                 'complementary' => 'required|integer|between:1,49',
             ]);
 
-            $validated['date_at'] = Carbon::parse($validated['date_at'])->toDateString(); // "2025-06-15"
+            $validated['date_at'] = Carbon::parse($validated['date_at'])->addDay()->toDateString(); // "2025-06-15"
             sort($validated['numbers']);
             $validated['numbers'][] = $request->complementary;
 

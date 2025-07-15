@@ -7,6 +7,7 @@ import { useForm } from '@inertiajs/vue3';
 import { ref, reactive, onMounted } from "vue";
 import pkg from "lodash";
 import axios from "axios";
+import {formatDateForInput} from "@/composables/useFormatters.js";
 
 const { pickBy } = pkg;
 
@@ -42,7 +43,7 @@ const fetchData = () => {
 
 const deleteData = () => {
     deleteDialog.value = false;
-    form.delete(route("lottery.destroy", data.result?.id), {
+    form.delete(route("lottery.results.destroy", data.result?.id), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
@@ -125,7 +126,11 @@ const breadcrum = ref([
                 <template #loading> Loading data. Please wait. </template>
 
                 <Column header="No" field="id" sortable></Column>
-                <Column field="date_at" header="Date" sortable></Column>
+                <Column field="date_at" header="Date" sortable>
+                    <template #body="{data}">
+                        {{ formatDateForInput(data.date_at) }}
+                    </template>
+                </Column>
                 <Column field="numbers" header="Numbers" sortable></Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">

@@ -20,4 +20,5 @@ Route::prefix('results')->name('results.')->group(function () {
     Route::put('{result}', [LotteryController::class, 'update'])->name('update');
     Route::post('', [LotteryController::class, 'store'])->name('store');
     Route::post('import', [LotteryController::class, 'importResults'])->name('import');
+    Route::delete('{result}', [LotteryController::class, 'destroy'])->name('destroy');
 });
