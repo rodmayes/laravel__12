@@ -118,6 +118,45 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('refreshData', [JobController::class, 'refreshData'])->name('refreshData');
         Route::delete('{id}', [JobController::class, 'destroy'])->name('delete');
     });
+    Route::get('terminal', [\App\Http\Controllers\TerminalController::class, 'index'])->name('terminal.index');
+
+    // Commands
+    Route::post('/run-command', function (Request $request) {
+        $command = $request->input('command');
+
+        // Lista blanca de comandos permitidos
+        $allowed = [
+            'cache:clear',
+            'route:list',
+            'config:cache',
+            'lottery:generate-magik-numbers',
+            'queue:work',
+            'schedule:run'
+        ];
+
+        if (!in_array($command, $allowed)) {
+            return response()->json([
+                'success' => false,
+                'output' => 'Comando no permitido: ' . $command
+            ], 403);
+        }
+
+        try {
+            // Ejecuta el comando de forma segura
+            Artisan::call($command);
+            $output = Artisan::output();
+
+            return response()->json([
+                'success' => true,
+                'output' => $output,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    });
 });
 
 

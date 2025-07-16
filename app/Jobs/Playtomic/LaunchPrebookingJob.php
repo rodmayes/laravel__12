@@ -72,9 +72,9 @@ class LaunchPrebookingJob implements ShouldQueue
             $bookingResult = $this->makeBooking($response, $booking);
 
             if (!isset($bookingResult['error'])) {
+                $booking->setBooked();
                 Mail::to($user->email)->send(new PlaytomicBookingConfirmation($booking, $resource, $timetable, $bookingResult));
                 $this->appendLog($booking, 'Email sent');
-                $booking->setBooked();
             } else {
                 $this->appendLog($booking, 'Booking failed: ' . $bookingResult['error']);
             }
