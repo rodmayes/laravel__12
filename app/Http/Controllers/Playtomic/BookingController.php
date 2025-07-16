@@ -393,9 +393,9 @@ class BookingController extends Controller
     public function toggleBooked(Booking $booking){
         try{
             $booking->toggleBooked();
-            return back()->with('success', $booking->name . ' booked status changed successfully.');
+            return response()->json(['status' => true, 'booking' => $booking]);
         }catch (\Exception $e){
-            return back()->with('error', 'Error status changed ' . $booking->name . $e->getMessage());
+            throw new \Exception('Booking toggle error'. $e->getMessage());
         }
     }
 }

@@ -5,89 +5,91 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="77c33c65-7943-4dea-b646-bb8283f2b689" name="Changes" comment="Initial commit">
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/TerminalController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/Pages/Admin/Terminal/Index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Jobs/Playtomic/LaunchPrebookingJob.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Jobs/Playtomic/LaunchPrebookingJob.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/AppLayout-ChdgOd20.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/ApplicationLogo-D_ZivV2h.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/BookingCards-Z0cTpBzq.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/BookingTable-BwVmL6ru.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/ConfirmPassword-Dz_OVX_J.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-B9AJvtPz.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-BJZsQXVO.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-BODFmkOU.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-BgoNvg-k.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-CpmhtBio.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-DTPMYn5F.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-JtUsqrmu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-cTsVhIcO.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Dashboard-DuFEyrmz.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/DeleteUserForm-BnI4evCx.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/DialogForm-CZgnrXK7.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/DropdownLink-BWcTSRlk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-BQqkExc5.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-Bd4P0m1u.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-BnN1Ial7.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-C-6nZ9ab.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-C-o2ZQ6_.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-CXIZsJAO.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-CeJLbSRI.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-N4BYOXuI.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-a6FG5vhW.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/ForgotPassword-BO9BiOnD.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/GuestLayout-Bc0qgTVH.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Import-BpSXlodT.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-B4QuDG_P.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-B6C5yIYn.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-BEczJB3e.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-CZvddlib.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-ClC6zT8H.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-D7jRkCnl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-DPlocXoB.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-DadiLnQc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-Du0gLVia.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-RaMeN3pQ.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-UqF3Z7ue.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Login-DRtQGFMz.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/PrimaryButton-60MTCYIC.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Register-BCNdQ9aB.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/ResetPassword-Cpgztgs0.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/TextInput-BmrNE766.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/UpdatePasswordForm-DfBcgnGC.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/UpdateProfileInformationForm-DW2WkLgH.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/UserPlaytomic-Lr7Fp3OH.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/VerifyEmail-BpZ8NJ8s.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Welcome-DKGQQi3a.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/Welcome-old-NBC78Tiq.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/app-ULZ4ZAEb.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-B0phHS61.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-B5FKt3It.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-B8iOEnMR.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-BjBZQ7gi.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-Bz54wLod.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-C-Rg3VL4.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-C70yr8kA.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-CJNgEKTO.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-CUYQLcCd.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-CY0KFJ9r.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-Cq-UX9Hm.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DFEJBaiI.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DOoilzS3.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DVKQFXMH.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DgFixrIt.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DvEu1BkS.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-OWtXGIvL.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-XD9PKuO2.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-_WgtLCcT.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-cSgwQ100.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-l8FFwk_X.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-qbvNbHHM.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/index-yv-qAUCS.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/loadToast-cPLvEfas.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/build/assets/lodash-DEQDDsa8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/BookingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Playtomic/BookingController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Booking.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Booking.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/AppLayout-Bl-vab2g.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/ApplicationLogo-BHEwGsh8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/BookingCards-lpV7Tmss.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/BookingTable-BNdW8nSJ.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/ConfirmPassword-tgqYqAOb.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-B6Rq0rXC.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-BUlP25J9.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-CCW4AuRy.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-COi7qW3a.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-DFAqCMig.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-DV6wBUN-.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-DcVEdMR8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Create-i3H5DGeY.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Dashboard-BJ7cAmzQ.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/DeleteUserForm-BYYLvpGp.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/DialogForm-AWWd6gaV.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/DropdownLink-DAhIJGaX.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-BlHIq_jZ.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-Bmy5hA-p.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-BtVicR5x.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-CAZoIb75.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-D-JfDBz7.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-D92bkw7i.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-Dmg_nZRA.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-HfQC_QAq.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Edit-sKmkrOTW.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/ForgotPassword-dzBjmCez.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/GuestLayout--fWxdaUz.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Import-CjbzYRoS.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-0w38qrvp.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-6p53HO4e.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-9XOyXbnI.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-B4CSLKgs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-B5ObZHDi.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-ByFgUzqv.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-Cd1pxVMI.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-CqKrG5SO.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-DMHAl5Tc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-DfIcUAs2.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-DkZ6nCg8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Index-DxxmG-pr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Login-Di6Mq5_w.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/PrimaryButton-3YtLYfdd.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Register-B6rdFweF.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/ResetPassword-v1lA92GC.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/TextInput-IgE_LOqe.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/UpdatePasswordForm-CMcDxTzw.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/UpdateProfileInformationForm-DkSXAQW_.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/UserPlaytomic-De30oY9u.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/VerifyEmail-Cf5LUL0p.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Welcome-diLnX1Fm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/Welcome-old-BbqQumXm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/app-Cxz8kPVe.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-9Xaz2Oaa.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-B6FSQOG7.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-B7cmCZ4f.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-BDd8EV_O.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-BGeYvXUX.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-BLXHz3lq.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-BpllR3yN.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-BzQU1Vmi.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-C-D5iXqe.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-CYkK37In.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-CfT6KGyY.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-Cgv2F6jj.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-ChJKIlCL.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-CimEelRQ.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-CrDboz2d.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DKoNZaGB.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DUJJHCqo.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DvNqkBAG.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-DywEHISW.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-J0zXWw-N.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-WfSVfh0v.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-oCGvJJos.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/index-tTgwqWQu.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/loadToast-BmxbEe_F.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/build/assets/lodash-C8ehyM8K.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/build/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/build/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Partials/BookingCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Partials/BookingCards.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Partials/BookingTable.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/Pages/Playtomic/Booking/Partials/BookingTable.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/playtomic.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/playtomic.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -343,7 +345,7 @@
       <workItem from="1751559101460" duration="603000" />
       <workItem from="1751791666912" duration="2800000" />
       <workItem from="1751795919405" duration="26922000" />
-      <workItem from="1752212878761" duration="40940000" />
+      <workItem from="1752212878761" duration="44121000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />

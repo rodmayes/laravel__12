@@ -2,6 +2,10 @@
 import {computed, reactive, ref} from 'vue';
 import {parseISO} from "date-fns";
 import {formatDateLocal} from "@/composables/useFormatters.js";
+import axios from "axios";
+import { loadToast } from '@/composables/loadToast';
+
+const { toast } = loadToast();
 
 const props = defineProps({
     items: Object,
@@ -28,6 +32,18 @@ const cards = computed(() => props.items.data ?? []);
 const showLogs = (item) => {
     data.logs = item && item.log ? JSON.parse(item.log) : [];
     showLogsDialog.value = true;
+};
+
+const setBooked = (item) => {
+    axios.get(route('playtomic.bookings.toggle-booked', {booking:item.id}))
+        .then(() => {
+            toast.add({ severity: 'success', summary: 'Booking', detail: 'Updated booked successfully', life: 3000});
+            this.emit('onRefresh');
+
+        })
+        .catch(() => {
+            toast.add({severity: 'error', summary: 'Booking', detail: 'Updated booked unSuccessfully', life: 3000});
+        });
 };
 </script>
 
@@ -78,7 +94,7 @@ const showLogs = (item) => {
                 </p>
                 <div class="flex justify-between">
                     <div class="mt-2 flex justify-start gap-2">
-                        <Tag v-if="item.isBooked" severity="success" value="Booked" rounded/>
+                        <Tag v-if="item.is_booked" severity="success" value="Booked" rounded/>
                         <Tag v-else severity="danger" value="Non Booked" rounded/>
                     </div>
                     <div class="mt-2 flex justify-end gap-2">
@@ -88,6 +104,9 @@ const showLogs = (item) => {
                         <Button icon="pi pi-comments" severity="info" outlined rounded
                                 @click="showLogs(item)"
                                 />
+                        <Button icon="pi pi-check" severity="warn" outlined rounded v-tooltip="'Toggle booked'"
+                                @click="setBooked(item)"
+                        />
                         <Button icon="pi pi-trash" severity="danger" outlined rounded
                                 @click="emit('confirmDelete', item)"
                                 v-if="can(['playtomic.booking_delete'])" />
@@ -97,7 +116,7 @@ const showLogs = (item) => {
         </div>
         <Menubar class="mt-4">
             <template #start>
-                <Button icon="pi pi-refresh" text @click="emit('refresh')"/>
+                <Button icon="pi pi-refresh" text @click="emit('onRefresh')"/>
             </template>
 
             <template #end>

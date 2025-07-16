@@ -37,12 +37,12 @@ const toggleResources = (event) => popoverResources.value.toggle(event);
         <template #header>
             <div class="flex justify-between">
                 <span class="text-xl font-bold">{{ props.title}}</span>
-                <InputText v-model="data.params.search" placeholder="Search..." @input="onRefresh"/>
+                <InputText v-model="data.params.search" placeholder="Search..." @input="emit('onRefresh')"/>
             </div>
         </template>
 
         <template #paginatorstart>
-            <Button icon="pi pi-refresh" text @click="onRefresh"/>
+            <Button icon="pi pi-refresh" text @click="emit('onRefresh')"/>
         </template>
 
         <template #empty>No data found.</template>

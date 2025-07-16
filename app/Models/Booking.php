@@ -79,6 +79,8 @@ class Booking extends Model
         'duration'
     ];
 
+    protected $appends = ['is_booked'];
+
     public function club()
     {
         return $this->belongsTo(Club::class);
@@ -180,7 +182,8 @@ class Booking extends Model
 
     public function toggleBooked(){
         $this->booked_at = is_null($this->booked_at) ? now() : null;
-        return $this->save();
+        $this->save();
+        return $this;
     }
 
     public function getExecutionDateAttribute(){

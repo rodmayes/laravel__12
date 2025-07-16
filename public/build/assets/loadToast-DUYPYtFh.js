@@ -1,0 +1,1 @@
+import{aM as r,P as f,Q as i,a0 as c}from"./app-BxDWh9sJ.js";function u(){const t=r(),e=f(()=>i().props.flash);return c(e,s=>{if(s)for(const[a,o]of Object.entries(s))s[a]&&t.add({severity:a,summary:"Successful",detail:o,life:3e3})},{immediate:!0}),{toast:t}}export{u as l};

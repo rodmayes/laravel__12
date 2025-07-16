@@ -21,6 +21,7 @@ use App\Http\Controllers\Playtomic\TimetableController;
         Route::get('generate-links/{booking}', [BookingController::class, 'generatelinks'])->name('generate-links');
         Route::get('{booking}', [BookingController::class, 'show'])->name('show');
         Route::get('pre-booking', [BookingController::class, 'prebooking'])->name('pre-booking');
+        Route::get('toggle-booked/{booking}', [BookingController::class, 'toggleBooked'])->name('toggle-booked');
     });
 
     Route::get('timetable/get-list',[TimetableController::class, 'getList'])->name('timetable.get-list');
